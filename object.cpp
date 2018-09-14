@@ -12,36 +12,6 @@
 
 #define VERTEX_SIZE 3
 
-/*
-Object::Object(
-	float* vertices, unsigned int v_size,
-	unsigned int* indices, unsigned int i_size, unsigned int i_count,
-	unsigned int s,
-	const glm::vec3& p,
-	float si
-):
-ri((struct RenderInfo){0,0,0,i_count}),
-shader(s),
-position((struct Position){glm::vec3(0.0f,0.0f,0.0f), p}),
-size((struct Size){glm::vec3(1.0f,1.0f,1.0f), glm::vec3(si, si, si)}){
-	//generate VBO (vertex buffer object), assign VB ID, and copy vertex data into VBO
-	glGenBuffers(1, &ri.VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, ri.VBO);
-	glBufferData(GL_ARRAY_BUFFER, v_size, vertices, GL_STATIC_DRAW);
-	//generate VAO (vertex array object)
-	glGenVertexArrays(1, &ri.VAO);
-	//bind VBO and VAO
-	glBindBuffer(GL_ARRAY_BUFFER, ri.VBO);
-	glBindVertexArray(ri.VAO);
-	//set vertex attrib pointers
-	glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE*sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//generate EBO (element buffer object), assign ID, and copy element data into EBO
-	glGenBuffers(1, &ri.EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ri.EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, i_size, indices, GL_STATIC_DRAW);
-}
-*/
 Object::Object(
 	GPUbuffer const * buffers,
 	unsigned int s,
@@ -57,4 +27,36 @@ size((struct Size){glm::vec3(1.0f,1.0f,1.0f), glm::vec3(si, si, si)}){
 
 Object::~Object(){
 	//nothing
+}
+
+void Object::update(const Camera& camera){
+
+	//model
+	transformation.model = glm::translate(transformation.model, position.current-position.last);
+	transformation.model = glm::scale(transformation.model, size.current/size.last);
+	//view
+	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
+	//projection
+	transformation.projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
+
+	applyTransformations();
+}
+
+void Object::applyTransformations(){
+	//synchronize positioning and sizing
+	position.last = position.current;
+	size.last = size.current;
+
+	//apply transformations into shader
+	Shader::useShader(shader);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection));
+}
+
+void Object::render() const{
+	Shader::useShader(shader);
+	glBindVertexArray(ri.VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ri.EBO);
+	glDrawElements(ri.mode, ri.indices_count, GL_UNSIGNED_INT, 0);
 }

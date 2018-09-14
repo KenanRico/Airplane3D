@@ -40,7 +40,6 @@ class Object{
 		Transformation transformation;
 
 	public:
-		//Object(float*, unsigned int, unsigned int*, unsigned int, unsigned int, unsigned int, const glm::vec3&, float);
 		Object(GPUbuffer const *, unsigned int, const glm::vec3&, float);
 		virtual ~Object();
 	private:
@@ -49,8 +48,10 @@ class Object{
 		Object& operator=(const Object&) = delete;
 
 	public:
-		virtual void update(const Camera&) = 0;
-		virtual void render() const = 0;
+		virtual void update(const Camera&);
+		void render() const;
+	protected:
+		void applyTransformations();
 };
 
 //-------------------------------------------------------------

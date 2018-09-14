@@ -2,14 +2,14 @@
 #define STATIONARY_PLANET_H
 //--------------------------------------------------------------
 
-#include "nonplayableobject.h"
+#include "object.h"
 #include "camera.h"
 #include "gpubuffer.h"
 
 #include <glm/glm.hpp>
 
 
-class StationaryPlanet : public NonPlayableObject{
+class StationaryPlanet : public Object{
 	private: 
 		struct Rotation{
 			float speed;
@@ -27,7 +27,6 @@ class StationaryPlanet : public NonPlayableObject{
 		*/
 
 	public:
-		//StationaryPlanet(float*, unsigned int, unsigned int*, unsigned int, unsigned int, unsigned int, const glm::vec3&, float, float, const glm::vec3&);
 		StationaryPlanet(GPUbuffer const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&);
 		virtual ~StationaryPlanet();
 	private:
@@ -37,7 +36,7 @@ class StationaryPlanet : public NonPlayableObject{
 
 	public:
 		void update(const Camera&) override;
-		void render() const override;
+		void render() const;
 };
 
 //--------------------------------------------------------------

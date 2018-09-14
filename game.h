@@ -2,14 +2,18 @@
 #define GAME_H
 //-------------------------------------------------------------
 #include "object.h"
+#include "nonplayableobject.h"
 #include "camera.h"
+#include "gpubuffer.h"
 
 #include <vector>
+#include <map>
 
 
 class Game{
-	private:
-		static std::vector<Object*> objects;
+	protected:
+		static std::map<const char*, GPUbuffer*> gpu_buffers;
+		static std::vector<NonPlayableObject*> non_playable_objects;
 		static std::vector<Camera*> cameras;
 		static std::vector<Camera*>::const_iterator current_camera;
 
@@ -24,6 +28,14 @@ class Game{
 		static void update();
 		static void render();
 		static void free();
+
+
+		friend void loadObjects();
+		friend void createGPUBuffers();
 };
+
+void loadObjects();
+void createGPUBuffers();
+
 //-------------------------------------------------------------
 #endif

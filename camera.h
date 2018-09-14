@@ -39,6 +39,7 @@ class Camera{
 		const glm::vec3& straightUp() const;
 		float fov() const;
 		float renderDistance() const;
+		void printInfo() const;
 };
 
 //--------------------------------------------------------

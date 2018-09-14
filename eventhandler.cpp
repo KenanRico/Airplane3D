@@ -4,7 +4,7 @@
 
 
 
-struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 5, (bool*)0 , (bool*)0 };
+struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 7, (bool*)0 , (bool*)0 };
 struct EventHandler::Mouse EventHandler::mouse = (struct EventHandler::Mouse){
 	{ 0.0f, 0.0f },
 	{ {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
@@ -70,7 +70,7 @@ void EventHandler::keyboardCallback(GLFWwindow* w, int key, int scancode, int ac
 		if(!keyboard.held[ESC]){
 			keyboard.click[ESC] = true;
 			keyboard.held[ESC] = true;
-		}else;
+		}
 	}else if(key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE){
 		keyboard.held[ESC] = false;
 	}
@@ -79,37 +79,55 @@ void EventHandler::keyboardCallback(GLFWwindow* w, int key, int scancode, int ac
 		if(!keyboard.held[W]){
 			keyboard.click[W] = true;
 			keyboard.held[W] = true;
-		}else;
+		}
 	}else if(key==GLFW_KEY_W && action==GLFW_RELEASE){
 		keyboard.held[W] = false;
-	}else;
+	}
 
 	if(key==GLFW_KEY_S && action==GLFW_PRESS){
 		if(!keyboard.held[S]){
 			keyboard.click[S] = true;
 			keyboard.held[S] = true;
-		}else;
+		}
 	}else if(key==GLFW_KEY_S && action==GLFW_RELEASE){
 		keyboard.held[S] = false;
-	}else;
+	}
 
 	if(key==GLFW_KEY_A && action==GLFW_PRESS){
 		if(!keyboard.held[A]){
 			keyboard.click[A] = true;
 			keyboard.held[A] = true;
-		}else;
+		}
 	}else if(key==GLFW_KEY_A && action==GLFW_RELEASE){
 		keyboard.held[A] = false;
-	}else;
+	}
 
 	if(key==GLFW_KEY_D && action==GLFW_PRESS){
 		if(!keyboard.held[D]){
 			keyboard.click[D] = true;
 			keyboard.held[D] = true;
-		}else;
+		}
 	}else if(key==GLFW_KEY_D && action==GLFW_RELEASE){
 		keyboard.held[D] = false;
-	}else;
+	}
+
+	if(key==GLFW_KEY_SPACE && action==GLFW_PRESS){
+		if(!keyboard.held[SPACE]){
+			keyboard.click[SPACE] = true;
+			keyboard.held[SPACE] = true;
+		}
+	}else if(key==GLFW_KEY_SPACE && action==GLFW_RELEASE){
+		keyboard.held[SPACE] = false;
+	}
+
+	if(key==GLFW_KEY_LEFT_SHIFT && action==GLFW_PRESS){
+		if(!keyboard.held[LSHIFT]){
+			keyboard.click[LSHIFT] = true;
+			keyboard.held[LSHIFT] = true;
+		}
+	}else if(key==GLFW_KEY_LEFT_SHIFT && action==GLFW_RELEASE){
+		keyboard.held[LSHIFT] = false;
+	}
 }
 
 //callback for cursor position
@@ -127,29 +145,29 @@ void EventHandler::mouseClickCallback(GLFWwindow* w, int button, int action, int
 			if(!mouse.held[LEFT]){
 				mouse.click[LEFT] = true;
 				mouse.held[LEFT] = true;
-			}else;
+			}
 		}else if(action==GLFW_RELEASE){
 			mouse.held[LEFT] = false;
-		}else;
-	}else;
+		}
+	}
 	if(button==GLFW_MOUSE_BUTTON_MIDDLE){
 		if(action==GLFW_PRESS){
 			if(!mouse.held[MID]){
 				mouse.click[MID] = true;
 				mouse.held[MID] = true;
-			}else;
+			}
 		}else if(action==GLFW_RELEASE){
 			mouse.held[MID] = false;
-		}else;
-	}else;
+		}
+	}
 	if(button==GLFW_MOUSE_BUTTON_RIGHT){
 		if(action==GLFW_PRESS){
 			if(!mouse.held[RIGHT]){
 				mouse.click[RIGHT] = true;
 				mouse.held[RIGHT] = true;
-			}else;
+			}
 		}else if(action==GLFW_RELEASE){
 			mouse.held[RIGHT] = false;
 		}
-	}else;
+	}
 }

@@ -28,19 +28,31 @@ void Camera::update(){
 	//update coord system
 	if(EventHandler::keyDown(EventHandler::W)){
 		//lift front vector, and change up vector accordingly
-		rotate(coord.front, coord.up, coord.right, -0.3f);
+		rotate(coord.front, coord.up, coord.right, -0.1f);
 	}
 	if(EventHandler::keyDown(EventHandler::A)){
 		//lift right vector and change up vector accordingly
-		rotate(coord.right, coord.up, coord.front, 0.3f);
+		rotate(coord.right, coord.up, coord.front, 0.1f);
 	}
 	if(EventHandler::keyDown(EventHandler::S)){
 		//lower front vector, and change up vector accordingly
-		rotate(coord.front, coord.up, coord.right, 0.3f);
+		rotate(coord.front, coord.up, coord.right, 0.1f);
 	}
 	if(EventHandler::keyDown(EventHandler::D)){
 		//lift right vector and change up vector accordingly
-		rotate(coord.right, coord.up, coord.front, -0.3f);
+		rotate(coord.right, coord.up, coord.front, -0.1f);
+	}
+
+	//update speed
+	if(EventHandler::keyDown(EventHandler::SPACE)){
+		property.speed += 0.002f;
+	}else{
+		property.speed -= 0.01f;
+	}
+	if(property.speed>0.2f){
+		property.speed = 0.2f;
+	}else if(property.speed<0.0f){
+		property.speed = 0.0f;
 	}
 
 	//update position (position)
@@ -69,6 +81,12 @@ float Camera::fov() const{
 
 float Camera::renderDistance() const{
 	return property.render_distance;
+}
+
+void Camera::printInfo() const{
+	std::string log("Camera position: ");
+	log += glm::to_string(position) + std::string("; Camera direction: ") + glm::to_string(coord.front);
+	Logger::toConsole(Logger::L_INFO, log);
 }
 
 

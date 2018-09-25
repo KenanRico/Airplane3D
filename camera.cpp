@@ -9,21 +9,27 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-Camera::Camera(float fo, float d, float sp, float se, const glm::vec3& p):
-property((struct CameraProperty){fo, d, sp, se}),
-coord((struct CoordinateSystem){glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f)}),
+
+
+Camera::Camera(float fo, float d, const glm::vec3& p, const glm::vec3& f):
+property((struct CameraProperty){fo, d}),
+coord((struct CoordinateSystem){glm::normalize(f), glm::normalize(glm::cross(f,glm::vec3(0.0f,1.0f,0.0f))), glm::cross(coord.front, coord.up)}),
 position(p),
 lens_pos(p+coord.front){
 	coord.right = glm::normalize(glm::cross(coord.front, coord.up));
+}
+
+Camera::Camera(const Camera& rhs): property(rhs.property), coord(rhs.coord), position(rhs.position), lens_pos(rhs.lens_pos){
+
 }
 
 Camera::~Camera(){
 	//nothing here
 }
 
-void rotate(glm::vec3&, glm::vec3&, const glm::vec3&, float);
-void Camera::update(){
-	//update view properties (FOV, render distance, cam speed)
+
+
+void Camera::update(float speed){
 
 	//update coord system
 	if(EventHandler::keyDown(EventHandler::W)){
@@ -43,25 +49,12 @@ void Camera::update(){
 		rotate(coord.right, coord.up, coord.front, -0.1f);
 	}
 
-	//update speed
-	if(EventHandler::keyDown(EventHandler::SPACE)){
-		property.speed += 0.002f;
-	}else{
-		property.speed -= 0.01f;
-	}
-	if(property.speed>0.2f){
-		property.speed = 0.2f;
-	}else if(property.speed<0.0f){
-		property.speed = 0.0f;
-	}
 
-	//update position (position)
-	position += coord.front * property.speed;
+	position += coord.front * speed;
 
 	//update lens
 	lens_pos = position + coord.front;
 }
-
 
 const glm::vec3& Camera::pos() const{
 	return position;
@@ -90,7 +83,7 @@ void Camera::printInfo() const{
 }
 
 
-void rotate(glm::vec3& vec1, glm::vec3& vec2, const glm::vec3& ref, float angle_degree){
+void Camera::rotate(glm::vec3& vec1, glm::vec3& vec2, const glm::vec3& ref, float angle_degree){
 	//define 3x3 identity matrix
 	glm::mat3 identity = glm::mat3();
 	//define 3x3 lever matrix

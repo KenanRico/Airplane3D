@@ -39,7 +39,7 @@ void GameInitProc::createGPUBuffers(std::map<const char*, GPUbuffer*>* gpu_buffe
 		0.0f,0.0f,-1.0f
 	};
 	unsigned int i1[] = {0,1,2,0,3,1,2,3};
-	GLenum m1 = GL_TRIANGLES;
+	GLenum m1 = GL_LINE_LOOP;
 	gpu_buffers->insert(
 		std::make_pair("piramid frame", new GPUbuffer(v1, sizeof(v1), 3, i1, sizeof(i1), sizeof(i1)/sizeof(unsigned int), m1))
 	);
@@ -94,7 +94,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<con
 			unsigned int s = Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl");
 			planets->push_back(
 				new StationaryPlanet(
-					gpu_buffers.find("rectangle frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
+					gpu_buffers.find("piramid frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
 				)
 			);
 		}else if(type=="rePlanet"){
@@ -108,7 +108,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<con
 			unsigned int s = Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl");
 			planets->push_back(
 				new RevolvingPlanet(
-					gpu_buffers.find("piramid frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation)
+					gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation)
 				)
 			);
 		}else if(type=="marker"){
@@ -117,7 +117,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<con
 			float size = 0.0f;
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size;
-			unsigned int s = Shader::initShaders("shaders/VShader.glsl", "shaders/Fmarker.glsl");
+			unsigned int s = Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl");
 			planets->push_back(
 				new Object(
 					gpu_buffers.find("marker")->second, s, pos, size
@@ -128,9 +128,5 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<con
 		}
 	}
 	fs.close();
-}
-
-void GameInitProc::createCameras(std::vector<Camera*>* cameras){
-	cameras->push_back(new Camera(55.0f, 250.0f, 0.001f, 0.1f, glm::vec3(-25.0f, 0.0f, 1.0f)));
 }
 

@@ -29,6 +29,7 @@ Object::~Object(){
 	//nothing
 }
 
+
 void Object::update(const Camera& camera){
 
 	//model

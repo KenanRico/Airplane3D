@@ -15,7 +15,6 @@
 namespace GameInitProc{
 	void createGPUBuffers(std::map<const char*, GPUbuffer*>*);
 	void loadObjects(std::vector<Object*>*, const std::map<const char*, GPUbuffer*>&);
-	void createCameras(std::vector<Camera*>*);
 };
 
 //----------------------------------------------------------------------

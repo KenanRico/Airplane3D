@@ -22,8 +22,9 @@ class StationaryPlanet : public Object{
 			struct RenderInfo ri;
 			unsigned int shader;
 			struct Position position;
-			Transformation transformation;
+			glm::vec3 velocity
 			glm::vec3 size;
+			Transformation transformation;
 		*/
 
 	public:

@@ -13,8 +13,8 @@
 
 
 namespace GameInitProc{
-	void createGPUBuffers(std::map<const char*, GPUbuffer*>*);
-	void loadObjects(std::vector<Object*>*, const std::map<const char*, GPUbuffer*>&);
+	void createGPUBuffers(std::map<std::string, GPUbuffer*>*);
+	void loadObjects(std::vector<Object*>*, const std::map<std::string, GPUbuffer*>&);
 };
 
 //----------------------------------------------------------------------

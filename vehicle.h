@@ -14,7 +14,9 @@ class Vehicle : public Object{
 		enum CameraID {FP=0, TP=1, rear=2};
 	private:
 		struct Velocity{
-			glm::vec3 direction;
+			glm::vec3 front;
+			glm::vec3 up;
+			glm::vec3 right;
 			float magnitude;
 			float max;
 			float min;
@@ -32,6 +34,7 @@ class Vehicle : public Object{
 		struct Velocity velocity;
 		struct Control control;
 		struct Cameras cameras;
+		bool control_lock;
 
 	public:
 		Vehicle(GPUbuffer const *, unsigned int, const glm::vec3&, float, const glm::vec3&, float, float, float, float, float, float);
@@ -45,6 +48,7 @@ class Vehicle : public Object{
 		void update(const Camera&) override;
 		void render() const;
 		const Camera& viewingCamera() const;
+		void controlLock(bool);
 };
 
 //---------------------------------------------------------------------

@@ -8,13 +8,16 @@
 #include "revolvingplanet.h"
 #include "shader.h"
 
+#include <string>
 #include <vector>
 #include <map>
 #include <fstream>
 #include <sstream>
 
+#include <iostream>
 
-void GameInitProc::createGPUBuffers(std::map<const char*, GPUbuffer*>* gpu_buffers){
+
+void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffers){
 	//rectangle frame
 	float v0[] = {
 		-1.0f,1.0f,1.0f,
@@ -60,22 +63,9 @@ void GameInitProc::createGPUBuffers(std::map<const char*, GPUbuffer*>* gpu_buffe
 }
 
 
-void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<const char*, GPUbuffer*>& gpu_buffers){
+void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std::string, GPUbuffer*>& gpu_buffers){
 	//load conf file
 	std::ifstream fs("objectconfigs/obj.conf", std::ios::in);
-	//define vertices and indices data
-	float cube[] = {
-		-1.0f,1.0f,1.0f,
-		1.0f,1.0f,1.0f,
-		-1.0f,-1.0f,1.0f,
-		1.0f,-1.0f,1.0f,
-		-1.0f,1.0f,-1.0f,
-		1.0f,1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f
-	};
-	//unsigned int c_indices[] = {0,1,2, 1,2,3, 4,5,6, 5,6,7, 0,4,2, 4,2,6, 1,3,5, 3,5,7};
-	unsigned int c_indices[] = {0,1,3,2,0,4,6,2,3,7,6,4,5,7,5,1,5,4};
 	//parse file
 	std::string line("line");
 	while(std::getline(fs, line)){
@@ -90,7 +80,6 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<con
 			glm::vec3 rotation_orientation = glm::vec3();
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size>>rotation_speed>>rotation_orientation.x>>rotation_orientation.y>>rotation_orientation.z;
-			//std::cout<<pos.x<<" "<<pos.y<<" "<<pos.z<<" "<<size<<"\n";
 			unsigned int s = Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl");
 			planets->push_back(
 				new StationaryPlanet(

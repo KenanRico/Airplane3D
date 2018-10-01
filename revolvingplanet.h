@@ -12,7 +12,7 @@ class RevolvingPlanet : public Object{
 	private: 
 		struct Revolution{
 			float speed;
-			glm::vec3 orientation;
+			glm::vec3 axis;
 		};
 	private:
 		static float scale;

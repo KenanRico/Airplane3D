@@ -23,7 +23,7 @@ RevolvingPlanet::~RevolvingPlanet(){
 void RevolvingPlanet::update(const Camera& camera){
 
 	//update position
-	position.current += glm::normalize(glm::cross(position.current, revolution.orientation))*0.05f;
+	position.current += glm::normalize(glm::cross(position.current, revolution.axis))*0.05f;
 	
 	//create references for transformation matrices
 	glm::mat4& model = transformation.model;
@@ -32,8 +32,8 @@ void RevolvingPlanet::update(const Camera& camera){
 
 	/*update transformations (T*R*S*vertex)*/
 	//model
-	model = glm::translate(model, position.current-position.last);
 	model = glm::scale(model, size.current/size.last);
+	model = glm::translate(model, position.current-position.last);
 	//view
 	view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection

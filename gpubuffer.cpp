@@ -24,13 +24,13 @@ GPUbuffer::GPUbuffer(
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, i_size, indices, GL_STATIC_DRAW);
-
 }
 
 GPUbuffer::~GPUbuffer(){
 	//nothing
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &VAO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VAO);
 }
 
 void GPUbuffer::queryRenderInfo(unsigned int* ur_VBO, unsigned int* ur_VAO, unsigned int* ur_EBO, unsigned int* ur_ic, GLenum* ur_m) const{

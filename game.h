@@ -7,16 +7,17 @@
 #include "vehicle.h"
 #include "debugcamera.h"
 
+#include <string>
 #include <vector>
 #include <map>
 
 
 class Game{
 	protected:
-		static std::map<const char*, GPUbuffer*> gpu_buffers;
+		static std::map<std::string, GPUbuffer*> gpu_buffers;
 		static std::vector<Object*> planets;
 		static Vehicle* vehicle;
-		static DebugCamera debug_camera;
+		static Camera debug_camera;
 
 		static Camera const* current_camera;
 

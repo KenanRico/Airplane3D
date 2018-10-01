@@ -33,8 +33,8 @@ Object::~Object(){
 void Object::update(const Camera& camera){
 
 	//model
-	transformation.model = glm::translate(transformation.model, position.current-position.last);
 	transformation.model = glm::scale(transformation.model, size.current/size.last);
+	transformation.model = glm::translate(transformation.model, position.current-position.last);
 	//view
 	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection

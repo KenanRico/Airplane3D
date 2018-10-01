@@ -36,9 +36,9 @@ void StationaryPlanet::update(const Camera& camera){
 
 	/*update transformations (T*R*S*vertex)*/
 	//model
-	model = glm::translate(model, position.current-position.last);
-	model = glm::rotate(model, glm::radians(rotation.speed), rotation.orientation);
 	model = glm::scale(model, size.current/size.last);
+	model = glm::rotate(model, glm::radians(rotation.speed), rotation.orientation);
+	model = glm::translate(model, position.current-position.last);
 	//view
 	view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection

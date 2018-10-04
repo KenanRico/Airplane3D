@@ -35,7 +35,7 @@ GPUbuffer::~GPUbuffer(){
 
 void GPUbuffer::queryRenderInfo(unsigned int* ur_VBO, unsigned int* ur_VAO, unsigned int* ur_EBO, unsigned int* ur_ic, GLenum* ur_m) const{
 	*ur_VBO = VBO;
-	*ur_VAO = VAO;
+ 	*ur_VAO = VAO;
 	*ur_EBO = EBO;
 	*ur_ic = indices_count;
 	*ur_m = mode;

@@ -10,7 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-//#define OLD
+#define MODEL
 
 
 Vehicle::Vehicle(
@@ -41,22 +41,22 @@ void Vehicle::update(const Camera& camera){
 	if(control_lock){
 		/*-------handle input, update object-------*/
 		if(EventHandler::keyDown(EventHandler::W)){
-			rotate(velocity.front, velocity.up, velocity.right, -0.1f);
+			rotate(velocity.front, velocity.up, velocity.right, -0.15f);
 		}
 		if(EventHandler::keyDown(EventHandler::A)){
-			rotate(velocity.right, velocity.up, velocity.front, 0.1f);
+			rotate(velocity.right, velocity.up, velocity.front, 0.15f);
 		}
 		if(EventHandler::keyDown(EventHandler::S)){
-			rotate(velocity.front, velocity.up, velocity.right, 0.1f);
+			rotate(velocity.front, velocity.up, velocity.right, 0.15f);
 		}
 		if(EventHandler::keyDown(EventHandler::D)){
-				rotate(velocity.right, velocity.up, velocity.front, -0.1f);
+				rotate(velocity.right, velocity.up, velocity.front, -0.15f);
 		}
 		float& speed = velocity.magnitude;
 		if(EventHandler::keyDown(EventHandler::SPACE)){
-			speed += 0.0001f;
+			speed += 0.0003f;
 		}else{
-			speed -= 0.0003f;
+			speed -= 0.0009f;
 		}
 		const float& max = velocity.max;
 		const float& min = velocity.min;
@@ -92,10 +92,17 @@ void Vehicle::update(const Camera& camera){
 	r->lens_pos = r->position + r->coord.front;
 
 	/*------update transformations--------*/
+#ifdef MODEL
+	struct ModelTransformation* model = &transformation.model;
+	model->scale = glm::scale(model->scale, size.current/size.last);
+	model->translate = glm::translate(model->translate, position.current-position.last);
+	model->overall = model->translate * model->rotate * model->scale;
+#else
 	transformation.model = glm::translate(transformation.model, position.last);
 	transformation.model = glm::scale(transformation.model, size.current/size.last);
 	transformation.model = glm::translate(transformation.model, position.last);
 	transformation.model = glm::translate(transformation.model, position.current-position.last);
+#endif
 	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	transformation.projection = glm::perspective(
 		glm::radians(camera.fov()),

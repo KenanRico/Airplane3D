@@ -33,8 +33,15 @@ Object::~Object(){
 void Object::update(const Camera& camera){
 
 	//model
+#ifdef MODEL
+	struct ModelTransformation* model = &transformation.model;
+	model->scale = glm::scale(model->scale, size.current/size.last);
+	model->translate = glm::translate(model->translate, position.current-position.last);
+	model->overall = model->translate * model->rotate * model->scale;
+#else
 	transformation.model = glm::scale(transformation.model, size.current/size.last);
 	transformation.model = glm::translate(transformation.model, position.current-position.last);
+#endif
 	//view
 	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
@@ -50,7 +57,7 @@ void Object::applyTransformations(){
 
 	//apply transformations into shader
 	Shader::useShader(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model.overall));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection));
 }

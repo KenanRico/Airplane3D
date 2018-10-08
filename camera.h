@@ -21,7 +21,6 @@ class Camera{
 		struct CoordinateSystem coord;
 		glm::vec3 position;
 		glm::vec3 lens_pos;
-		bool control_lock;
 
 	public:
 		Camera(float, float, const glm::vec3&, const glm::vec3&);
@@ -32,7 +31,7 @@ class Camera{
 		Camera& operator=(const Camera&) = delete;
 
 	public:
-		virtual void update();
+		void update(const Camera&);
 	public:
 		const glm::vec3& pos() const;
 		const glm::vec3& lensPos() const;
@@ -40,7 +39,6 @@ class Camera{
 		float fov() const;
 		float renderDistance() const;
 		void printInfo() const;
-		void controlLock(bool);
 	public:
 		static void rotate(glm::vec3&, glm::vec3&, const glm::vec3&, float);
 

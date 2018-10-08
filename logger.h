@@ -12,6 +12,7 @@ namespace Logger{
 	//print to file
 	void toFile(MsgType, const char*);
 	void toFile(MsgType, const std::string&);
+	
 };
 
 //-------------------------------------------------------------

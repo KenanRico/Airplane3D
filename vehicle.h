@@ -5,6 +5,9 @@
 #include "camera.h"
 #include "object.h"
 #include "gpubuffer.h"
+#include "weapon.h"
+
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -13,10 +16,12 @@ class Vehicle : public Object{
 	private:
 		enum CameraID {FP=0, TP=1, rear=2};
 	private:
-		struct Velocity{
+		struct Orientation{
 			glm::vec3 front;
 			glm::vec3 up;
 			glm::vec3 right;
+		};
+		struct Velocity{
 			float magnitude;
 			float max;
 			float min;
@@ -31,10 +36,11 @@ class Vehicle : public Object{
 			Camera* current;
 		};
 	private:
+		struct Orientation orientation;
 		struct Velocity velocity;
 		struct Control control;
 		struct Cameras cameras;
-		bool control_lock;
+		Weapon weapon;
 
 	public:
 		Vehicle(GPUbuffer const *, unsigned int, const glm::vec3&, float, const glm::vec3&, float, float, float, float, float, float);
@@ -45,10 +51,12 @@ class Vehicle : public Object{
 		Vehicle& operator=(const Vehicle&) = delete;
 
 	public:
+		void defineWeapon(GPUbuffer const *, const std::string&, const std::string&, float, float);
 		void update(const Camera&) override;
-		void render() const;
+		void render() const override;
 		const Camera& viewingCamera() const;
-		void controlLock(bool);
+	private:
+		void computeTransformations(const Camera&) override;
 };
 
 //---------------------------------------------------------------------

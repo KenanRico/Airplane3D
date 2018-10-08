@@ -3,6 +3,7 @@
 #include "object.h"
 #include "shader.h"
 #include "gamesystem.h"
+#include "physicshandler.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,8 +21,8 @@ Object::Object(
 ):
 ri((struct RenderInfo){0,0,0,0}),
 shader(s),
-position((struct Position){glm::vec3(0.0f,0.0f,0.0f), p}),
-size((struct Size){glm::vec3(1.0f,1.0f,1.0f), glm::vec3(si, si, si)}){
+geometry((struct GeometricProperties){(struct Position){glm::vec3(0.0f,0.0f,0.0f), p}, (struct Size){glm::vec3(1.0f,1.0f,1.0f), glm::vec3(si, si, si)}}),
+physics_handler(this){
 	buffers->queryRenderInfo(&ri.VBO, &ri.VAO, &ri.EBO, &ri.indices_count, &ri.mode);
 }
 
@@ -31,29 +32,27 @@ Object::~Object(){
 
 
 void Object::update(const Camera& camera){
+	physics_handler.handleAll();
+	computeTransformations(camera);
+	applyTransformations();
+}
 
+void Object::computeTransformations(const Camera& camera){
 	//model
-#ifdef MODEL
 	struct ModelTransformation* model = &transformation.model;
-	model->scale = glm::scale(model->scale, size.current/size.last);
-	model->translate = glm::translate(model->translate, position.current-position.last);
+	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
+	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
 	model->overall = model->translate * model->rotate * model->scale;
-#else
-	transformation.model = glm::scale(transformation.model, size.current/size.last);
-	transformation.model = glm::translate(transformation.model, position.current-position.last);
-#endif
 	//view
 	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
 	transformation.projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
-
-	applyTransformations();
 }
 
 void Object::applyTransformations(){
 	//synchronize positioning and sizing
-	position.last = position.current;
-	size.last = size.current;
+	geometry.position.last = geometry.position.current;
+	geometry.size.last = geometry.size.current;
 
 	//apply transformations into shader
 	Shader::useShader(shader);

@@ -15,8 +15,7 @@ Camera::Camera(float fo, float d, const glm::vec3& p, const glm::vec3& f):
 property((struct CameraProperty){fo, d}),
 coord((struct CoordinateSystem){glm::normalize(f), glm::normalize(glm::cross(f,glm::vec3(0.0f,1.0f,0.0f))), glm::cross(coord.front, coord.up)}),
 position(p),
-lens_pos(p+coord.front),
-control_lock(false){
+lens_pos(p+coord.front){
 	coord.right = glm::normalize(glm::cross(coord.front, coord.up));
 }
 
@@ -30,9 +29,8 @@ Camera::~Camera(){
 
 
 
-void Camera::update(){
-
-	if(control_lock){
+void Camera::update(const Camera& cam){
+	if(&cam==this){
 		//parse input
 		if(EventHandler::keyDown(EventHandler::W)){
 			//move forward
@@ -51,7 +49,6 @@ void Camera::update(){
 			rotate(coord.front, coord.right, coord.up, 0.2f);
 		}
 	}
-
 
 	//update lens
 	lens_pos = position + coord.front;
@@ -81,10 +78,6 @@ void Camera::printInfo() const{
 	std::string log("Camera position: ");
 	log += glm::to_string(position) + std::string("; Camera direction: ") + glm::to_string(coord.front);
 	Logger::toConsole(Logger::L_INFO, log);
-}
-
-void Camera::controlLock(bool lock){
-	control_lock = lock;
 }
 
 

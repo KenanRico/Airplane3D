@@ -130,5 +130,4 @@ void endGame(){
 void endGL(){
 	//deallocate GL resources, end GL related processes
 	glfwTerminate();
-	delete window;
 }

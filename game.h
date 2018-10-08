@@ -15,11 +15,8 @@
 class Game{
 	protected:
 		static std::map<std::string, GPUbuffer*> gpu_buffers;
-		static std::vector<Object*> planets;
+		static std::vector<Object*> objects;
 		static Vehicle* vehicle;
-		static Camera debug_camera;
-
-		static Camera const* current_camera;
 
 	private:
 		Game() = delete;

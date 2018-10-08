@@ -5,11 +5,11 @@
 
 #include "camera.h"
 #include "gpubuffer.h"
+#include "physicshandler.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MODEL
 
 class Object{
 	private:
@@ -28,29 +28,34 @@ class Object{
 			glm::vec3 last;
 			glm::vec3 current;
 		};
-#ifdef MODEL
+		struct GeometricProperties{
+			struct Position position;
+			struct Size size;
+		};
+		struct PhysicalProperties{
+			float weight;
+			float elasticity;
+		};
 		struct ModelTransformation{
 			glm::mat4 scale;
 			glm::mat4 rotate;
 			glm::mat4 translate;
 			glm::mat4 overall;
 		};
-#endif
 		struct Transformation{
-#ifdef MODEL
 			struct ModelTransformation model;
-#else
-			glm::mat4 model;
-#endif
 			glm::mat4 view;
 			glm::mat4 projection;
 		};
 	protected:
 		struct RenderInfo ri;
 		unsigned int shader;
-		struct Position position;
-		struct Size size;
-		Transformation transformation;
+		//struct Position position;
+		//struct Size size;
+		struct GeometricProperties geometry;
+		struct PhysicalProperties physics;
+		struct Transformation transformation;
+		PhysicsHandler physics_handler;
 
 	public:
 		Object(GPUbuffer const *, unsigned int, const glm::vec3&, float);
@@ -62,9 +67,12 @@ class Object{
 
 	public:
 		virtual void update(const Camera&);
-		void render() const;
+		virtual void render() const;
 	protected:
+		virtual void computeTransformations(const Camera&);
 		void applyTransformations();
+
+	friend class PhysicsHandler;
 };
 
 //-------------------------------------------------------------

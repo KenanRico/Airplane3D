@@ -4,7 +4,7 @@
 
 
 
-struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 9, (bool*)0 , (bool*)0 };
+struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 10, (bool*)0 , (bool*)0 };
 struct EventHandler::Mouse EventHandler::mouse = (struct EventHandler::Mouse){
 	{ 0.0f, 0.0f },
 	{ {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
@@ -146,6 +146,16 @@ void EventHandler::keyboardCallback(GLFWwindow* w, int key, int scancode, int ac
 	}else if(key==GLFW_KEY_LEFT_CONTROL && action==GLFW_RELEASE){
 		keyboard.held[LCTRL] = false;
 	}
+
+	if(key==GLFW_KEY_J && action==GLFW_PRESS){
+		if(!keyboard.held[J]){
+			keyboard.click[J] = true;
+			keyboard.held[J] = true;
+		}
+	}else if(key==GLFW_KEY_J && action==GLFW_RELEASE){
+		keyboard.held[J] = false;
+	}
+
 }
 
 //callback for cursor position

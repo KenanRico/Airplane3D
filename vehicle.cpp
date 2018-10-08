@@ -3,14 +3,14 @@
 #include "gamesystem.h"
 #include "eventhandler.h"
 #include "logger.h"
+#include "weapon.h"
 
 #include <math.h>
+#include <iostream>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-#define MODEL
 
 
 Vehicle::Vehicle(
@@ -19,15 +19,22 @@ Vehicle::Vehicle(
 	float mra, float ps, float rs
 ): 
 Object(gb, s, p, si),
-velocity((struct Velocity){glm::normalize(_front), glm::normalize(glm::cross(_front, glm::vec3(1.0f, 1.0f, 1.0f))), glm::normalize(glm::cross(velocity.front, velocity.up)), mag, max, min}),
+orientation(
+	(struct Orientation){
+		glm::normalize(_front),
+		glm::normalize(glm::cross(_front, glm::vec3(1.0f, 1.0f, 1.0f))),
+		glm::normalize(glm::cross(orientation.front, orientation.up))
+	}
+),
+velocity((struct Velocity){mag, max, min}),
 control((struct Control){mra, ps, rs}),
 cameras(
 	(struct Cameras){
-		{Camera(40.0f, 250.0f, p, velocity.front), Camera(60.0f, 250.0f, p, velocity.front), Camera(60.0f, 250.0f, p, -velocity.front)},
+		{Camera(40.0f, 250.0f, p, orientation.front), Camera(60.0f, 350.0f, p, orientation.front), Camera(60.0f, 250.0f, p, -orientation.front)},
 		&cameras.views[FP]
 	}
 ),
-control_lock(false){
+weapon(200, 400.0f){
 	//nothin
 }
 
@@ -36,80 +43,76 @@ Vehicle::~Vehicle(){
 }
 
 
+void Vehicle::defineWeapon(GPUbuffer const * gb, const std::string& v, const std::string& f, float spd, float pow){
+	weapon.define(gb, v, f, spd, pow);
+}
+
 void rotate(glm::vec3&, glm::vec3&, const glm::vec3&, float);
 void Vehicle::update(const Camera& camera){
-	if(control_lock){
+	physics_handler.handleAll();
+	if(&cameras.views[FP]<=&camera && &camera<=&cameras.views[rear]){
 		/*-------handle input, update object-------*/
 		if(EventHandler::keyDown(EventHandler::W)){
-			rotate(velocity.front, velocity.up, velocity.right, -0.15f);
+			rotate(orientation.front, orientation.up, orientation.right, -0.1f);
 		}
 		if(EventHandler::keyDown(EventHandler::A)){
-			rotate(velocity.right, velocity.up, velocity.front, 0.15f);
+			rotate(orientation.right, orientation.up, orientation.front, 0.1f);
 		}
 		if(EventHandler::keyDown(EventHandler::S)){
-			rotate(velocity.front, velocity.up, velocity.right, 0.15f);
+			rotate(orientation.front, orientation.up, orientation.right, 0.1f);
 		}
 		if(EventHandler::keyDown(EventHandler::D)){
-				rotate(velocity.right, velocity.up, velocity.front, -0.15f);
+			rotate(orientation.right, orientation.up, orientation.front, -0.1f);
 		}
 		float& speed = velocity.magnitude;
 		if(EventHandler::keyDown(EventHandler::SPACE)){
-			speed += 0.0003f;
+			speed += 0.0001f;
 		}else{
-			speed -= 0.0009f;
+			speed -= 0.0003f;
 		}
-		const float& max = velocity.max;
-		const float& min = velocity.min;
-		if(speed>max){
-			speed = max;
-		}else if(speed<min){
-			speed = min;
-		}
-		position.current += velocity.magnitude * velocity.front;
 		if(EventHandler::keyClicked(EventHandler::C)){
 			cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];
 		}
+		if(EventHandler::keyClicked(EventHandler::J)){
+			weapon.attack(geometry.position.current, orientation.front, velocity.magnitude);
+		}
+	}else{
+		velocity.magnitude -= 0.0003f;
 	}
+	weapon.update(camera);
+	weapon.cleanUp(geometry.position.current);
+	float& speed = velocity.magnitude;
+	const float& max = velocity.max;
+	const float& min = velocity.min;
+	if(speed>max){
+		speed = max;
+	}else if(speed<min){
+		speed = min;
+	}
+	geometry.position.current += velocity.magnitude * orientation.front;
 
 	/*----update cams------*/
 	Camera* fp = &cameras.views[FP];
 	Camera* tp = &cameras.views[TP];
 	Camera* r = &cameras.views[rear];
-	fp->position = position.current;
-	fp->coord.front = velocity.front;
-	fp->coord.up = velocity.up;
-	fp->coord.right = velocity.right;
+	fp->position = geometry.position.current;
+	fp->coord.front = orientation.front;
+	fp->coord.up = orientation.up;
+	fp->coord.right = orientation.right;
 	fp->lens_pos = fp->position + fp->coord.front;
-	tp->position = position.current - velocity.front*(2.0f+velocity.magnitude*10.0f);
-	tp->coord.front = velocity.front;
-	tp->coord.up = velocity.up;
-	tp->coord.right = velocity.right;
+	tp->position = geometry.position.current - orientation.front*(15.0f+velocity.magnitude*20.0f);
+	tp->coord.front = orientation.front;
+	tp->coord.up = orientation.up;
+	tp->coord.right = orientation.right;
 	tp->lens_pos = tp->position + tp->coord.front;
-	r->position = position.current;
-	r->coord.front = -velocity.front;
-	r->coord.up = velocity.up;
-	r->coord.right = -velocity.right;
+	r->position = geometry.position.current;
+	r->coord.front = -orientation.front;
+	r->coord.up = orientation.up;
+	r->coord.right = -orientation.right;
 	r->lens_pos = r->position + r->coord.front;
 
 	/*------update transformations--------*/
-#ifdef MODEL
-	struct ModelTransformation* model = &transformation.model;
-	model->scale = glm::scale(model->scale, size.current/size.last);
-	model->translate = glm::translate(model->translate, position.current-position.last);
-	model->overall = model->translate * model->rotate * model->scale;
-#else
-	transformation.model = glm::translate(transformation.model, position.last);
-	transformation.model = glm::scale(transformation.model, size.current/size.last);
-	transformation.model = glm::translate(transformation.model, position.last);
-	transformation.model = glm::translate(transformation.model, position.current-position.last);
-#endif
-	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
-	transformation.projection = glm::perspective(
-		glm::radians(camera.fov()),
-		(float)GameSystem::windowW()/(float)GameSystem::windowH(),
-		0.1f,
-		camera.renderDistance()
-	);
+	computeTransformations(camera);
 
 	/*------apply transformation---------*/
 	applyTransformations();
@@ -119,16 +122,31 @@ void Vehicle::render() const{
 	if(cameras.current!=&cameras.views[FP]){
 		Object::render();
 	}
+	weapon.render();
 }
 
 const Camera& Vehicle::viewingCamera() const{
 	return *cameras.current;
 }
 
-void Vehicle::controlLock(bool lock){
-	control_lock = lock;
-}
 
+void Vehicle::computeTransformations(const Camera& camera){
+	//model
+	struct ModelTransformation* model = &transformation.model;
+	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
+	model->rotate = glm::rotate(glm::mat4(), acos(glm::dot(glm::vec3(0.0f,0.0f,-1.0f), orientation.front)), orientation.right);
+	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
+	model->overall = model->translate * model->rotate * model->scale;
+	//view
+	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
+	//projection
+	transformation.projection = glm::perspective(
+		glm::radians(camera.fov()),
+		(float)GameSystem::windowW()/(float)GameSystem::windowH(),
+		0.1f,
+		camera.renderDistance()
+	);
+}
 
 void rotate(glm::vec3& vec1, glm::vec3& vec2, const glm::vec3& ref, float angle_degree){
 	//define 3x3 identity matrix

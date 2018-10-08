@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 #include <GLFW/glfw3.h>
 
@@ -50,7 +51,7 @@ void GameSystem::update(){
 	delta_time = new_time - time;
 	time = new_time;
 	//update FPS
-	FPS = (int)(1000.0f/delta_time);
+	FPS = (int)(1.0f/delta_time);
 	//query window size
 	glfwGetWindowSize(window, &window_width, &window_height);
 }

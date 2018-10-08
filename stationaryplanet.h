@@ -38,6 +38,8 @@ class StationaryPlanet : public Object{
 	public:
 		void update(const Camera&) override;
 		void render() const;
+	private:
+		void computeTransformations(const Camera&) override;
 };
 
 //--------------------------------------------------------------

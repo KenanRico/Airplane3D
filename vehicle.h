@@ -56,7 +56,7 @@ class Vehicle : public Object{
 		void render() const override;
 		const Camera& viewingCamera() const;
 	private:
-		void computeTransformations(const Camera&) override;
+		void computeTransformations(const Camera&, struct Transformation*) override;
 };
 
 //---------------------------------------------------------------------

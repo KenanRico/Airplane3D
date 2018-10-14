@@ -33,9 +33,9 @@ class Weapon{
 	public:
 		void define(GPUbuffer const *, const std::string&, const std::string&, float, float);
 		void attack(const glm::vec3&, const glm::vec3&, float);
-		void update(const Camera&);
+		void updateBullets(const Camera&);
 		void cleanUp(const glm::vec3&);
-		void render() const;
+		void renderBullets() const;
 };
 
 //------------------------------------------------------------------

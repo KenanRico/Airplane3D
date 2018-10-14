@@ -49,6 +49,7 @@ void Vehicle::defineWeapon(GPUbuffer const * gb, const std::string& v, const std
 
 void rotate(glm::vec3&, glm::vec3&, const glm::vec3&, float);
 void Vehicle::update(const Camera& camera){
+	/*-----Handle physics-----*/
 	physics_handler.handleAll();
 	if(&cameras.views[FP]<=&camera && &camera<=&cameras.views[rear]){
 		/*-------handle input, update object-------*/
@@ -79,7 +80,7 @@ void Vehicle::update(const Camera& camera){
 	}else{
 		velocity.magnitude -= 0.0003f;
 	}
-	weapon.update(camera);
+	weapon.updateBullets(camera);
 	weapon.cleanUp(geometry.position.current);
 	float& speed = velocity.magnitude;
 	const float& max = velocity.max;
@@ -89,6 +90,8 @@ void Vehicle::update(const Camera& camera){
 	}else if(speed<min){
 		speed = min;
 	}
+
+	/*------Update geometry------*/
 	geometry.position.current += velocity.magnitude * orientation.front;
 
 	/*----update cams------*/
@@ -112,17 +115,18 @@ void Vehicle::update(const Camera& camera){
 	r->lens_pos = r->position + r->coord.front;
 
 	/*------update transformations--------*/
-	computeTransformations(camera);
+	struct Transformation transformation;
+	computeTransformations(camera, &transformation);
 
 	/*------apply transformation---------*/
-	applyTransformations();
+	applyTransformations(&transformation);
 }
 
 void Vehicle::render() const{
 	if(cameras.current!=&cameras.views[FP]){
 		Object::render();
 	}
-	weapon.render();
+	weapon.renderBullets();
 }
 
 const Camera& Vehicle::viewingCamera() const{
@@ -130,17 +134,22 @@ const Camera& Vehicle::viewingCamera() const{
 }
 
 
-void Vehicle::computeTransformations(const Camera& camera){
+void Vehicle::computeTransformations(const Camera& camera, struct Transformation* transformation){
+
+	glm::mat4 identity;
+
 	//model
-	struct ModelTransformation* model = &transformation.model;
-	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
-	model->rotate = glm::rotate(glm::mat4(), acos(glm::dot(glm::vec3(0.0f,0.0f,-1.0f), orientation.front)), orientation.right);
-	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
+	struct ModelTransformation* model = &(transformation->model);
+	model->scale = glm::scale(identity, geometry.size.current);
+	model->rotate = glm::rotate(identity, acos(glm::dot(glm::vec3(0.0f,0.0f,-1.0f), orientation.front)), orientation.right);
+	model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(0.0f,1.0f,0.0f), orientation.up)), orientation.front);
+	model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(1.0f,0.0f,0.0f), orientation.front)), orientation.up);
+	model->translate = glm::translate(identity, geometry.position.current);
 	model->overall = model->translate * model->rotate * model->scale;
 	//view
-	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
+	transformation->view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
-	transformation.projection = glm::perspective(
+	transformation->projection = glm::perspective(
 		glm::radians(camera.fov()),
 		(float)GameSystem::windowW()/(float)GameSystem::windowH(),
 		0.1f,

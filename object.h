@@ -12,7 +12,7 @@
 
 
 class Object{
-	private:
+	protected:
 		struct RenderInfo{
 			unsigned int VBO;
 			unsigned int VAO;
@@ -24,17 +24,24 @@ class Object{
 			glm::vec3 last;
 			glm::vec3 current;
 		};
+		struct Rotation{
+			glm::vec3 orientation;
+			float last;
+			float current;
+		};
 		struct Size{
 			glm::vec3 last;
 			glm::vec3 current;
 		};
 		struct GeometricProperties{
 			struct Position position;
+			struct Rotation rotation;
 			struct Size size;
 		};
 		struct PhysicalProperties{
 			float weight;
 			float elasticity;
+			glm::vec3 velocity;
 		};
 		struct ModelTransformation{
 			glm::mat4 scale;
@@ -69,8 +76,8 @@ class Object{
 		virtual void update(const Camera&);
 		virtual void render() const;
 	protected:
-		virtual void computeTransformations(const Camera&);
-		void applyTransformations();
+		virtual void computeTransformations(const Camera&, struct Transformation*);
+		void applyTransformations(struct Transformation const *);
 
 	friend class PhysicsHandler;
 };

@@ -18,8 +18,8 @@
 float StationaryPlanet::scale = 10.0f;
 
 StationaryPlanet::StationaryPlanet(GPUbuffer const * buffers, unsigned int s, const glm::vec3& p, float si, float rs, const glm::vec3& ro):
-Object(buffers, s, p, si*scale), rotation((struct Rotation){rs, ro}){
-	//nothing here
+Object(buffers, s, p, si*scale), rotation_speed(rs){
+	geometry.rotation.orientation = ro;
 }
 
 StationaryPlanet::~StationaryPlanet(){
@@ -27,22 +27,32 @@ StationaryPlanet::~StationaryPlanet(){
 }
 
 void StationaryPlanet::update(const Camera& camera){
+
+	/*-----handle physics----*/
 	physics_handler.handleAll();
-	computeTransformations(camera);
-	applyTransformations();
+
+	/*-----update geometry----*/
+	geometry.rotation.current += rotation_speed;
+
+	/*-----compute&apply transforamtions----*/
+	struct Transformation transformation;
+	computeTransformations(camera, &transformation);
+	applyTransformations(&transformation);
+
 }
 
-void StationaryPlanet::computeTransformations(const Camera& camera){
+void StationaryPlanet::computeTransformations(const Camera& camera, struct Transformation* transformation){
 	//create references for transformation matrices
-	struct ModelTransformation* model = &transformation.model;
-	glm::mat4* view = &transformation.view;
-	glm::mat4* projection = &transformation.projection;
+	struct ModelTransformation* model = &(transformation->model);
+	glm::mat4* view = &(transformation->view);
+	glm::mat4* projection = &(transformation->projection);
+	glm::mat4 identity;
 
 	/*update transformations (T*R*S*vertex)*/
 	//model
-	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
-	model->rotate = glm::rotate(model->rotate, glm::radians(rotation.speed), rotation.orientation);
-	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
+	model->scale = glm::scale(identity, geometry.size.current);
+	model->rotate = glm::rotate(identity, glm::radians(geometry.rotation.current), geometry.rotation.orientation);
+	model->translate = glm::translate(identity, geometry.position.current);
 	model->overall = model->translate * model->rotate * model->scale;
 	//view
 	*view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());

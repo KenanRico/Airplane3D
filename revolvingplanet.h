@@ -37,7 +37,7 @@ class RevolvingPlanet : public Object{
 		void update(const Camera&) override;
 		void render() const;
 	private:
-		void computeTransformations(const Camera&) override;
+		void computeTransformations(const Camera&, struct Transformation*) override;
 };
 
 //----------------------------------------------------------------

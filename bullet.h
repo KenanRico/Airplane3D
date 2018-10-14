@@ -24,7 +24,7 @@ class Bullet: public Object{
 
 	public:
 		void update(const Camera&) override;
-		void computeTransformations(const Camera&) override;
+		void computeTransformations(const Camera&, struct Transformation*) override;
 
 	friend class Weapon;
 };

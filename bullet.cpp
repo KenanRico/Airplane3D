@@ -24,22 +24,30 @@ Bullet::~Bullet(){
 }
 
 void Bullet::update(const Camera& camera){
+
+	/*-----handle physics----*/
 	physics_handler.handleAll();
+
+	/*-----update geometry----*/
 	geometry.position.current += direction * speed;
-	computeTransformations(camera);
-	applyTransformations();
+
+	/*-----compute&apply transforamtions----*/
+	struct Transformation transformation;
+	computeTransformations(camera, &transformation);
+	applyTransformations(&transformation);
 }
 
-void Bullet::computeTransformations(const Camera& camera){
+void Bullet::computeTransformations(const Camera& camera, struct Transformation* transformation){
+	glm::mat4 identity;
 	//model
-	struct ModelTransformation* model = &transformation.model;
-	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
-	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
+	struct ModelTransformation* model = &(transformation->model);
+	model->scale = glm::scale(identity, geometry.size.current);
+	model->translate = glm::translate(identity, geometry.position.current);
 	model->overall = model->translate * model->rotate * model->scale;
 	//view
-	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
+	transformation->view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
-	transformation.projection = glm::perspective(
+	transformation->projection = glm::perspective(
 		glm::radians(camera.fov()),
 		(float)GameSystem::windowW()/(float)GameSystem::windowH(),
 		0.1f,

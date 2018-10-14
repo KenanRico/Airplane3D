@@ -10,14 +10,9 @@
 
 
 class StationaryPlanet : public Object{
-	private: 
-		struct Rotation{
-			float speed;
-			glm::vec3 orientation;
-		};
 	private:
 		static float scale;
-		struct Rotation rotation;
+		float rotation_speed;
 		/*inherited members:
 			struct RenderInfo ri;
 			unsigned int shader;
@@ -39,7 +34,7 @@ class StationaryPlanet : public Object{
 		void update(const Camera&) override;
 		void render() const;
 	private:
-		void computeTransformations(const Camera&) override;
+		void computeTransformations(const Camera&, struct Transformation*) override;
 };
 
 //--------------------------------------------------------------

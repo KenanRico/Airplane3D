@@ -12,6 +12,9 @@
 #include <glm/glm.hpp>
 
 
+#define VERSION 1
+
+
 Weapon::Weapon(unsigned int mc, float md): max_count(mc), max_distance(md){
 	//nothin
 }
@@ -42,13 +45,13 @@ void Weapon::attack(const glm::vec3& pos, const glm::vec3& dir, float base_spd){
 	}
 }
 
-void Weapon::update(const Camera& camera){
+void Weapon::updateBullets(const Camera& camera){
 	for(std::vector<Bullet*>::iterator b=bullets.begin(); b!=bullets.end(); ++b){
 		(*b)->update(camera);
 	}
 }
 
-void Weapon::render() const{
+void Weapon::renderBullets() const{
 	for(std::vector<Bullet*>::const_iterator b=bullets.begin(); b!=bullets.end(); ++b){
 		(*b)->render();
 		//Logger::toConsole(Logger::L_ERROR, "This weapon is already defined!");

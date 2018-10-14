@@ -21,9 +21,14 @@ Object::Object(
 ):
 ri((struct RenderInfo){0,0,0,0}),
 shader(s),
-geometry((struct GeometricProperties){(struct Position){glm::vec3(0.0f,0.0f,0.0f), p}, (struct Size){glm::vec3(1.0f,1.0f,1.0f), glm::vec3(si, si, si)}}),
 physics_handler(this){
 	buffers->queryRenderInfo(&ri.VBO, &ri.VAO, &ri.EBO, &ri.indices_count, &ri.mode);
+	geometry.position.last = glm::vec3(0.0f,0.0f,0.0f);
+	geometry.position.current = p;
+	geometry.size.last = glm::vec3(1.0f,1.0f,1.0f);
+	geometry.size.current = glm::vec3(si, si, si);
+	geometry.rotation.last = 0.0f;
+	geometry.rotation.current = 0.0f;
 }
 
 Object::~Object(){
@@ -32,33 +37,37 @@ Object::~Object(){
 
 
 void Object::update(const Camera& camera){
+
+	/*-----handle physics----*/
 	physics_handler.handleAll();
-	computeTransformations(camera);
-	applyTransformations();
+	
+	/*-----compute&apply transforamtions----*/
+	struct Transformation transformation;
+	computeTransformations(camera, &transformation);
+	applyTransformations(&transformation);
 }
 
-void Object::computeTransformations(const Camera& camera){
-	//model
-	struct ModelTransformation* model = &transformation.model;
-	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
-	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
-	model->overall = model->translate * model->rotate * model->scale;
-	//view
-	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
-	//projection
-	transformation.projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
+void Object::computeTransformations(const Camera& camera, struct Transformation* transformation){
+	glm::mat4 identity;
+	transformation->model.scale = glm::scale(identity, geometry.size.current);
+	transformation->model.translate = glm::translate(identity, geometry.position.current);
+	transformation->model.overall = transformation->model.translate * transformation->model.rotate * transformation->model.scale;
+	transformation->view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
+	transformation->projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
+
 }
 
-void Object::applyTransformations(){
+void Object::applyTransformations(struct Transformation const * transformation){
 	//synchronize positioning and sizing
 	geometry.position.last = geometry.position.current;
+	geometry.rotation.last = geometry.rotation.current;
 	geometry.size.last = geometry.size.current;
 
 	//apply transformations into shader
 	Shader::useShader(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model.overall));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation->model.overall));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(transformation->view));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(transformation->projection));
 }
 
 void Object::render() const{

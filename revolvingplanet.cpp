@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 
+
 float RevolvingPlanet::scale = 15.0f;
 
 
@@ -21,23 +22,31 @@ RevolvingPlanet::~RevolvingPlanet(){
 }
 
 void RevolvingPlanet::update(const Camera& camera){
+
+	/*-----handle physics----*/
 	physics_handler.handleAll();
+
+	/*-----update geometry----*/
 	geometry.position.current += glm::normalize(glm::cross(geometry.position.current, revolution.axis))*0.1f;
-	computeTransformations(camera);
-	applyTransformations();
+
+	/*-----compute&apply transforamtions----*/
+	struct Transformation transformation;
+	computeTransformations(camera, &transformation);
+	applyTransformations(&transformation);
 	
 }
 
-void RevolvingPlanet::computeTransformations(const Camera& camera){
+void RevolvingPlanet::computeTransformations(const Camera& camera, struct Transformation* transformation){
 	//create references for transformation matrices
-	struct ModelTransformation* model = &transformation.model;
-	glm::mat4* view = &transformation.view;
-	glm::mat4* projection = &transformation.projection;
+	struct ModelTransformation* model = &(transformation->model);
+	glm::mat4* view = &(transformation->view);
+	glm::mat4* projection = &(transformation->projection);
+	glm::mat4 identity;
 
 	/*update transformations (T*R*S*vertex)*/
 	//model
-	model->scale = glm::scale(model->scale, geometry.size.current/geometry.size.last);
-	model->translate = glm::translate(model->translate, geometry.position.current-geometry.position.last);
+	model->scale = glm::scale(identity, geometry.size.current);
+	model->translate = glm::translate(identity, geometry.position.current);
 	model->overall = model->translate * model->rotate * model->scale;
 	//view
 	*view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <glm/glm.hpp>
+
 
 float PhysicsHandler::gravity = 0.0f;
 std::vector<Object*> const * PhysicsHandler::object_pool = nullptr;
@@ -29,4 +31,14 @@ void PhysicsHandler::handleAll(){
 	client_object->geometry.position.current += overall_force;
 
 	//handle collisions
+	/*
+	for(std::vector<Object*>::const_iterator obj=object_pool->begin(); obj!=object_pool->end(); ++obj){
+		if(glm::length(client_object->geometry.position.current, (*obj)->geometry.position.current)<=2.0f){
+			if(*obj!=client_object){
+				
+			}
+		}
+	}
+	*/
+
 }

@@ -63,7 +63,13 @@ void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffe
 }
 
 
-void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std::string, GPUbuffer*>& gpu_buffers){
+void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_pool){
+	shader_pool->insert(std::make_pair("marker", Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl")));
+	shader_pool->insert(std::make_pair("basic shader", Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl")));
+}
+
+
+void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std::string, GPUbuffer*>& gpu_buffers, const std::map<std::string, unsigned int>& shader_pool){
 	//load conf file
 	std::ifstream fs("objectconfigs/obj.conf", std::ios::in);
 	//parse file
@@ -80,7 +86,8 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			glm::vec3 rotation_orientation = glm::vec3();
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size>>rotation_speed>>rotation_orientation.x>>rotation_orientation.y>>rotation_orientation.z;
-			unsigned int s = Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl");
+			unsigned int s = shader_pool.find("basic shader")->second;
+			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new StationaryPlanet(
 					gpu_buffers.find("piramid frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
@@ -94,7 +101,8 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			glm::vec3 revolution_orientation = glm::vec3();
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size>>revolution_speed>>revolution_orientation.x>>revolution_orientation.y>>revolution_orientation.z;
-			unsigned int s = Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl");
+			unsigned int s = shader_pool.find("basic shader")->second;
+			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new RevolvingPlanet(
 					gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation)
@@ -106,7 +114,8 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			float size = 0.0f;
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size;
-			unsigned int s = Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl");
+			unsigned int s = shader_pool.find("marker")->second;
+			//unsigned int s = Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl");
 			planets->push_back(
 				new Object(
 					gpu_buffers.find("marker")->second, s, pos, size

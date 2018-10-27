@@ -8,6 +8,7 @@
 #include "weapon.h"
 
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -38,9 +39,8 @@ class Vehicle : public Object{
 	private:
 		struct Orientation orientation;
 		struct Velocity velocity;
-		struct Control control;
+		struct Control controller;
 		struct Cameras cameras;
-		Weapon weapon;
 
 	public:
 		Vehicle(GPUbuffer const *, unsigned int, const glm::vec3&, float, const glm::vec3&, float, float, float, float, float, float);
@@ -51,12 +51,12 @@ class Vehicle : public Object{
 		Vehicle& operator=(const Vehicle&) = delete;
 
 	public:
-		void defineWeapon(GPUbuffer const *, const std::string&, const std::string&, float, float);
 		void update(const Camera&) override;
 		void render() const override;
 		const Camera& viewingCamera() const;
+		void control(std::vector<Object*>*) override;
 	private:
-		void computeTransformations(const Camera&, struct Transformation*) override;
+		void computeTransformations(const Camera&) override;
 };
 
 //---------------------------------------------------------------------

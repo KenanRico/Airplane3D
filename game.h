@@ -6,6 +6,7 @@
 #include "gpubuffer.h"
 #include "vehicle.h"
 #include "debugcamera.h"
+#include "handlermodule.h"
 
 #include <string>
 #include <vector>
@@ -15,8 +16,11 @@
 class Game{
 	protected:
 		static std::map<std::string, GPUbuffer*> gpu_buffers;
-		static std::vector<Object*> objects;
+		static std::map<std::string, unsigned int> shader_pool;
+		static std::vector<Object*> entity_pool;
+		static std::vector<Object*> controllables;
 		static Vehicle* vehicle;
+		static HandlerModule handlers;
 
 	private:
 		Game() = delete;
@@ -26,7 +30,7 @@ class Game{
 
 	public:
 		static void init();
-		static void update();
+		static void runPipeline();
 		static void render();
 		static void free();
 };

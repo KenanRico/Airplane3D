@@ -6,9 +6,11 @@
 #include "camera.h"
 #include "gpubuffer.h"
 #include "physicshandler.h"
+#include "pipeline.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <vector>
 
 
 class Object{
@@ -33,16 +35,6 @@ class Object{
 			glm::vec3 last;
 			glm::vec3 current;
 		};
-		struct GeometricProperties{
-			struct Position position;
-			struct Rotation rotation;
-			struct Size size;
-		};
-		struct PhysicalProperties{
-			float weight;
-			float elasticity;
-			glm::vec3 velocity;
-		};
 		struct ModelTransformation{
 			glm::mat4 scale;
 			glm::mat4 rotate;
@@ -54,6 +46,18 @@ class Object{
 			glm::mat4 view;
 			glm::mat4 projection;
 		};
+	public:
+		struct GeometricProperties{
+			struct Position position;
+			struct Rotation rotation;
+			struct Size size;
+		};
+		struct PhysicalProperties{
+			float weight;
+			float elasticity;
+			glm::vec3 velocity;
+		};
+
 	protected:
 		struct RenderInfo ri;
 		unsigned int shader;
@@ -63,6 +67,7 @@ class Object{
 		struct PhysicalProperties physics;
 		struct Transformation transformation;
 		PhysicsHandler physics_handler;
+		bool exists;
 
 	public:
 		Object(GPUbuffer const *, unsigned int, const glm::vec3&, float);
@@ -73,13 +78,18 @@ class Object{
 		Object& operator=(const Object&) = delete;
 
 	public:
+		struct GeometricProperties* getGeometry();
+		struct PhysicalProperties* getPhysics();
+		virtual void control(std::vector<Object*>*);
 		virtual void update(const Camera&);
 		virtual void render() const;
+		bool isAlive() const;
 	protected:
-		virtual void computeTransformations(const Camera&, struct Transformation*);
-		void applyTransformations(struct Transformation const *);
+		virtual void computeTransformations(const Camera&);
+		void updateProperties();
 
 	friend class PhysicsHandler;
+	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *);
 };
 
 //-------------------------------------------------------------

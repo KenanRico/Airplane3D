@@ -111,7 +111,7 @@ void loop(){
 void update(){
 	GameSystem::update();
 	EventHandler::update();
-	Game::update();
+	Game::runPipeline();
 }
 void render(){
 	glClearColor(0.001f, 0.05f, 0.10f, 1.0f);

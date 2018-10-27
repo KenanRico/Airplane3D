@@ -35,17 +35,16 @@ void StationaryPlanet::update(const Camera& camera){
 	geometry.rotation.current += rotation_speed;
 
 	/*-----compute&apply transforamtions----*/
-	struct Transformation transformation;
-	computeTransformations(camera, &transformation);
-	applyTransformations(&transformation);
+	computeTransformations(camera);
+	updateProperties();
 
 }
 
-void StationaryPlanet::computeTransformations(const Camera& camera, struct Transformation* transformation){
+void StationaryPlanet::computeTransformations(const Camera& camera){
 	//create references for transformation matrices
-	struct ModelTransformation* model = &(transformation->model);
-	glm::mat4* view = &(transformation->view);
-	glm::mat4* projection = &(transformation->projection);
+	struct ModelTransformation* model = &(transformation.model);
+	glm::mat4* view = &(transformation.view);
+	glm::mat4* projection = &(transformation.projection);
 	glm::mat4 identity;
 
 	/*update transformations (T*R*S*vertex)*/
@@ -58,8 +57,4 @@ void StationaryPlanet::computeTransformations(const Camera& camera, struct Trans
 	*view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
 	*projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
-}
-
-void StationaryPlanet::render() const{
-	Object::render();
 }

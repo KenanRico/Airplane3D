@@ -30,17 +30,16 @@ void RevolvingPlanet::update(const Camera& camera){
 	geometry.position.current += glm::normalize(glm::cross(geometry.position.current, revolution.axis))*0.1f;
 
 	/*-----compute&apply transforamtions----*/
-	struct Transformation transformation;
-	computeTransformations(camera, &transformation);
-	applyTransformations(&transformation);
+	computeTransformations(camera);
+	updateProperties();
 	
 }
 
-void RevolvingPlanet::computeTransformations(const Camera& camera, struct Transformation* transformation){
+void RevolvingPlanet::computeTransformations(const Camera& camera){
 	//create references for transformation matrices
-	struct ModelTransformation* model = &(transformation->model);
-	glm::mat4* view = &(transformation->view);
-	glm::mat4* projection = &(transformation->projection);
+	struct ModelTransformation* model = &(transformation.model);
+	glm::mat4* view = &(transformation.view);
+	glm::mat4* projection = &(transformation.projection);
 	glm::mat4 identity;
 
 	/*update transformations (T*R*S*vertex)*/
@@ -52,8 +51,4 @@ void RevolvingPlanet::computeTransformations(const Camera& camera, struct Transf
 	*view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
 	*projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
-}
-
-void RevolvingPlanet::render() const{
-	Object::render();
 }

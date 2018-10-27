@@ -27,14 +27,13 @@ orientation(
 	}
 ),
 velocity((struct Velocity){mag, max, min}),
-control((struct Control){mra, ps, rs}),
+controller((struct Control){mra, ps, rs}),
 cameras(
 	(struct Cameras){
 		{Camera(40.0f, 250.0f, p, orientation.front), Camera(60.0f, 350.0f, p, orientation.front), Camera(60.0f, 250.0f, p, -orientation.front)},
 		&cameras.views[FP]
 	}
-),
-weapon(200, 400.0f){
+){
 	//nothin
 }
 
@@ -43,46 +42,13 @@ Vehicle::~Vehicle(){
 }
 
 
-void Vehicle::defineWeapon(GPUbuffer const * gb, const std::string& v, const std::string& f, float spd, float pow){
-	weapon.define(gb, v, f, spd, pow);
-}
-
 void rotate(glm::vec3&, glm::vec3&, const glm::vec3&, float);
 void Vehicle::update(const Camera& camera){
 	/*-----Handle physics-----*/
 	physics_handler.handleAll();
-	if(&cameras.views[FP]<=&camera && &camera<=&cameras.views[rear]){
-		/*-------handle input, update object-------*/
-		if(EventHandler::keyDown(EventHandler::W)){
-			rotate(orientation.front, orientation.up, orientation.right, -0.1f);
-		}
-		if(EventHandler::keyDown(EventHandler::A)){
-			rotate(orientation.right, orientation.up, orientation.front, 0.1f);
-		}
-		if(EventHandler::keyDown(EventHandler::S)){
-			rotate(orientation.front, orientation.up, orientation.right, 0.1f);
-		}
-		if(EventHandler::keyDown(EventHandler::D)){
-			rotate(orientation.right, orientation.up, orientation.front, -0.1f);
-		}
-		float& speed = velocity.magnitude;
-		if(EventHandler::keyDown(EventHandler::SPACE)){
-			speed += 0.0001f;
-		}else{
-			speed -= 0.0003f;
-		}
-		if(EventHandler::keyClicked(EventHandler::C)){
-			cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];
-		}
-		if(EventHandler::keyClicked(EventHandler::J)){
-			weapon.attack(geometry.position.current, orientation.front, velocity.magnitude);
-		}
-	}else{
-		velocity.magnitude -= 0.0003f;
-	}
-	weapon.updateBullets(camera);
-	weapon.cleanUp(geometry.position.current);
+	
 	float& speed = velocity.magnitude;
+	speed -= 0.0003f;
 	const float& max = velocity.max;
 	const float& min = velocity.min;
 	if(speed>max){
@@ -115,18 +81,17 @@ void Vehicle::update(const Camera& camera){
 	r->lens_pos = r->position + r->coord.front;
 
 	/*------update transformations--------*/
-	struct Transformation transformation;
-	computeTransformations(camera, &transformation);
+	computeTransformations(camera);
 
 	/*------apply transformation---------*/
-	applyTransformations(&transformation);
+	updateProperties();
 }
 
 void Vehicle::render() const{
 	if(cameras.current!=&cameras.views[FP]){
 		Object::render();
 	}
-	weapon.renderBullets();
+	//weapon.renderBullets();
 }
 
 const Camera& Vehicle::viewingCamera() const{
@@ -134,12 +99,12 @@ const Camera& Vehicle::viewingCamera() const{
 }
 
 
-void Vehicle::computeTransformations(const Camera& camera, struct Transformation* transformation){
+void Vehicle::computeTransformations(const Camera& camera){
 
 	glm::mat4 identity;
 
 	//model
-	struct ModelTransformation* model = &(transformation->model);
+	struct ModelTransformation* model = &(transformation.model);
 	model->scale = glm::scale(identity, geometry.size.current);
 	model->rotate = glm::rotate(identity, acos(glm::dot(glm::vec3(0.0f,0.0f,-1.0f), orientation.front)), orientation.right);
 	model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(0.0f,1.0f,0.0f), orientation.up)), orientation.front);
@@ -147,14 +112,43 @@ void Vehicle::computeTransformations(const Camera& camera, struct Transformation
 	model->translate = glm::translate(identity, geometry.position.current);
 	model->overall = model->translate * model->rotate * model->scale;
 	//view
-	transformation->view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
+	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	//projection
-	transformation->projection = glm::perspective(
+	transformation.projection = glm::perspective(
 		glm::radians(camera.fov()),
 		(float)GameSystem::windowW()/(float)GameSystem::windowH(),
 		0.1f,
 		camera.renderDistance()
 	);
+}
+
+void Vehicle::control(std::vector<Object*>* objects){
+	/*-------handle input, update object-------*/
+	if(EventHandler::keyDown(EventHandler::W)){
+		rotate(orientation.front, orientation.up, orientation.right, -0.1f);
+	}
+	if(EventHandler::keyDown(EventHandler::A)){
+		rotate(orientation.right, orientation.up, orientation.front, 0.1f);
+	}
+	if(EventHandler::keyDown(EventHandler::S)){
+		rotate(orientation.front, orientation.up, orientation.right, 0.1f);
+	}
+	if(EventHandler::keyDown(EventHandler::D)){
+		rotate(orientation.right, orientation.up, orientation.front, -0.1f);
+	}
+	float& speed = velocity.magnitude;
+	if(EventHandler::keyDown(EventHandler::SPACE)){
+		speed += 0.0004f;
+	}
+	if(EventHandler::keyClicked(EventHandler::C)){
+		cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];
+	}
+	if(EventHandler::keyClicked(EventHandler::J)){
+		//weapon.attack(geometry.position.current, orientation.front, velocity.magnitude);
+		objects->push_back(new Bullet(geometry.position.current, 1.0f, orientation.front, velocity.magnitude+0.2f, 100.0f, this));
+	}
+	//weapon.updateBullets(camera);
+	//weapon.cleanUp(geometry.position.current);
 }
 
 void rotate(glm::vec3& vec1, glm::vec3& vec2, const glm::vec3& ref, float angle_degree){

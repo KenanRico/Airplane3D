@@ -5,7 +5,6 @@
 #include "camera.h"
 #include "object.h"
 #include "gpubuffer.h"
-#include "weapon.h"
 
 #include <string>
 #include <vector>
@@ -51,12 +50,10 @@ class Vehicle : public Object{
 		Vehicle& operator=(const Vehicle&) = delete;
 
 	public:
-		void update(const Camera&) override;
-		void render() const override;
+		void updateProperties() override;
+		void computeTransformations(const Camera&) override;
 		const Camera& viewingCamera() const;
 		void control(std::vector<Object*>*) override;
-	private:
-		void computeTransformations(const Camera&) override;
 };
 
 //---------------------------------------------------------------------

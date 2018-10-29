@@ -3,7 +3,6 @@
 #include "object.h"
 #include "shader.h"
 #include "gamesystem.h"
-#include "physicshandler.h"
 
 #include <vector>
 
@@ -23,7 +22,6 @@ Object::Object(
 ):
 ri((struct RenderInfo){0,0,0,0}),
 shader(s),
-physics_handler(this),
 exists(true){
 	buffers->queryRenderInfo(&ri.VBO, &ri.VAO, &ri.EBO, &ri.indices_count, &ri.mode);
 	geometry.position.last = glm::vec3(0.0f,0.0f,0.0f);
@@ -39,14 +37,8 @@ Object::~Object(){
 }
 
 
-void Object::update(const Camera& camera){
-
-	/*-----handle physics----*/
-	physics_handler.handleAll();
-	
-	/*-----compute&apply transforamtions----*/
-	computeTransformations(camera);
-	updateProperties();
+void Object::updateProperties(){
+	//do nothing in base class
 }
 
 void Object::computeTransformations(const Camera& camera){
@@ -56,26 +48,13 @@ void Object::computeTransformations(const Camera& camera){
 	transformation.model.overall = transformation.model.translate * transformation.model.rotate * transformation.model.scale;
 	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
 	transformation.projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
-
 }
 
-void Object::updateProperties(){
+void Object::syncProperties(){
 	//synchronize positioning and sizing
 	geometry.position.last = geometry.position.current;
 	geometry.rotation.last = geometry.rotation.current;
 	geometry.size.last = geometry.size.current;
-}
-
-
-void Object::render() const{
-	//apply transformations into shader
-	Shader::useShader(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model.overall));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection));
-	glBindVertexArray(ri.VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ri.EBO);
-	glDrawElements(ri.mode, ri.indices_count, GL_UNSIGNED_INT, 0);
 }
 
 

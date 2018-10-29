@@ -30,7 +30,7 @@ class Bullet: public Object{
 
 	public:
 		static void define(GPUbuffer*, unsigned int);
-		void update(const Camera&) override;
+		void updateProperties() override;
 		void computeTransformations(const Camera&) override;
 
 	friend class Weapon;

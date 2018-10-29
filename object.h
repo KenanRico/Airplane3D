@@ -5,7 +5,6 @@
 
 #include "camera.h"
 #include "gpubuffer.h"
-#include "physicshandler.h"
 #include "pipeline.h"
 
 #include <glm/glm.hpp>
@@ -66,7 +65,6 @@ class Object{
 		struct GeometricProperties geometry;
 		struct PhysicalProperties physics;
 		struct Transformation transformation;
-		PhysicsHandler physics_handler;
 		bool exists;
 
 	public:
@@ -80,15 +78,13 @@ class Object{
 	public:
 		struct GeometricProperties* getGeometry();
 		struct PhysicalProperties* getPhysics();
+		virtual void updateProperties();
 		virtual void control(std::vector<Object*>*);
-		virtual void update(const Camera&);
-		virtual void render() const;
+		virtual void computeTransformations(const Camera&);
 		bool isAlive() const;
 	protected:
-		virtual void computeTransformations(const Camera&);
-		void updateProperties();
+		void syncProperties();
 
-	friend class PhysicsHandler;
 	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *);
 };
 

@@ -3,7 +3,7 @@
 #include "gamesystem.h"
 #include "eventhandler.h"
 #include "logger.h"
-#include "weapon.h"
+#include "bullet.h"
 
 #include <math.h>
 #include <iostream>
@@ -43,10 +43,10 @@ Vehicle::~Vehicle(){
 
 
 void rotate(glm::vec3&, glm::vec3&, const glm::vec3&, float);
-void Vehicle::update(const Camera& camera){
-	/*-----Handle physics-----*/
-	physics_handler.handleAll();
-	
+
+void Vehicle::updateProperties(){
+	syncProperties();
+	geometry.position.current += velocity.magnitude * orientation.front;
 	float& speed = velocity.magnitude;
 	speed -= 0.0003f;
 	const float& max = velocity.max;
@@ -56,11 +56,6 @@ void Vehicle::update(const Camera& camera){
 	}else if(speed<min){
 		speed = min;
 	}
-
-	/*------Update geometry------*/
-	geometry.position.current += velocity.magnitude * orientation.front;
-
-	/*----update cams------*/
 	Camera* fp = &cameras.views[FP];
 	Camera* tp = &cameras.views[TP];
 	Camera* r = &cameras.views[rear];
@@ -79,19 +74,6 @@ void Vehicle::update(const Camera& camera){
 	r->coord.up = orientation.up;
 	r->coord.right = -orientation.right;
 	r->lens_pos = r->position + r->coord.front;
-
-	/*------update transformations--------*/
-	computeTransformations(camera);
-
-	/*------apply transformation---------*/
-	updateProperties();
-}
-
-void Vehicle::render() const{
-	if(cameras.current!=&cameras.views[FP]){
-		Object::render();
-	}
-	//weapon.renderBullets();
 }
 
 const Camera& Vehicle::viewingCamera() const{
@@ -144,11 +126,8 @@ void Vehicle::control(std::vector<Object*>* objects){
 		cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];
 	}
 	if(EventHandler::keyClicked(EventHandler::J)){
-		//weapon.attack(geometry.position.current, orientation.front, velocity.magnitude);
-		objects->push_back(new Bullet(geometry.position.current, 1.0f, orientation.front, velocity.magnitude+0.2f, 100.0f, this));
+		objects->push_back(new Bullet(geometry.position.current, 1.0f, orientation.front, velocity.magnitude+0.1f, 100.0f, this));
 	}
-	//weapon.updateBullets(camera);
-	//weapon.cleanUp(geometry.position.current);
 }
 
 void rotate(glm::vec3& vec1, glm::vec3& vec2, const glm::vec3& ref, float angle_degree){

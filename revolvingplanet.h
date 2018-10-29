@@ -34,8 +34,7 @@ class RevolvingPlanet : public Object{
 		RevolvingPlanet& operator=(const RevolvingPlanet&) = delete;
 
 	public:
-		void update(const Camera&) override;
-	private:
+		void updateProperties() override;
 		void computeTransformations(const Camera&) override;
 };
 

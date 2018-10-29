@@ -6,7 +6,6 @@
 #include "gpubuffer.h"
 #include "vehicle.h"
 #include "debugcamera.h"
-#include "handlermodule.h"
 
 #include <string>
 #include <vector>
@@ -20,7 +19,6 @@ class Game{
 		static std::vector<Object*> entity_pool;
 		static std::vector<Object*> controllables;
 		static Vehicle* vehicle;
-		static HandlerModule handlers;
 
 	private:
 		Game() = delete;

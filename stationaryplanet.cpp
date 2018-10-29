@@ -26,18 +26,11 @@ StationaryPlanet::~StationaryPlanet(){
 	//nothing here
 }
 
-void StationaryPlanet::update(const Camera& camera){
 
-	/*-----handle physics----*/
-	physics_handler.handleAll();
-
+void StationaryPlanet::updateProperties(){
+	syncProperties();
 	/*-----update geometry----*/
 	geometry.rotation.current += rotation_speed;
-
-	/*-----compute&apply transforamtions----*/
-	computeTransformations(camera);
-	updateProperties();
-
 }
 
 void StationaryPlanet::computeTransformations(const Camera& camera){

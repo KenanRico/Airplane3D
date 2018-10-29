@@ -21,18 +21,9 @@ RevolvingPlanet::~RevolvingPlanet(){
 	//nothing
 }
 
-void RevolvingPlanet::update(const Camera& camera){
-
-	/*-----handle physics----*/
-	physics_handler.handleAll();
-
-	/*-----update geometry----*/
+void RevolvingPlanet::updateProperties(){
+	syncProperties();
 	geometry.position.current += glm::normalize(glm::cross(geometry.position.current, revolution.axis))*0.1f;
-
-	/*-----compute&apply transforamtions----*/
-	computeTransformations(camera);
-	updateProperties();
-	
 }
 
 void RevolvingPlanet::computeTransformations(const Camera& camera){

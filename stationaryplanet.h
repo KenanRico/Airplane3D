@@ -31,8 +31,7 @@ class StationaryPlanet : public Object{
 		StationaryPlanet& operator=(const StationaryPlanet&) = delete;
 
 	public:
-		void update(const Camera&) override;
-	private:
+		void updateProperties() override;
 		void computeTransformations(const Camera&) override;
 };
 

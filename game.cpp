@@ -10,9 +10,8 @@
 #include "gameinitproc.h"
 #include "vehicle.h"
 #include "debugcamera.h"
-#include "physicshandler.h"
 #include "pipeline.h"
-#include "handlermodule.h"
+#include "bullet.h"
 
 #include <vector>
 #include <map>
@@ -22,10 +21,6 @@
 
 #include <glm/glm.hpp>
 
-#define OLD 0
-#define NEW 1
-#define VERSION OLD
-
 
 
 std::map<std::string, GPUbuffer*> Game::gpu_buffers;
@@ -33,12 +28,10 @@ std::map<std::string, unsigned int> Game::shader_pool;
 std::vector<Object*> Game::entity_pool;
 std::vector<Object*> Game::controllables;
 Vehicle* Game::vehicle = nullptr;
-HandlerModule Game::handlers;
 
 
 
 void Game::init(){
-	PhysicsHandler::initGlobal(&entity_pool);
 	GameInitProc::createGPUBuffers(&gpu_buffers);
 	GameInitProc::createShaders(&shader_pool);
 	GameInitProc::loadObjects(&entity_pool, gpu_buffers, shader_pool);
@@ -55,32 +48,23 @@ void Game::init(){
 }
 
 void Game::runPipeline(){
-#if VERSION==OLD
+	/*------------Update Handling Pipeline--------------*/
+	Pipeline::Updater::handleControls(&controllables, &entity_pool);
+	Pipeline::Updater::handlePhysics(&entity_pool);
+	Pipeline::Updater::handlePropertyUpdate(&entity_pool);
+	/*---------------Transformation Handler------------------*/
+	Pipeline::Transformer::transformAll(&entity_pool, vehicle->viewingCamera());
+	/*---------------Check whether object should still exist--------------------*/
 	for(std::vector<Object*>::iterator o=entity_pool.begin(); o!=entity_pool.end(); ++o){
 		if(!(*o)->isAlive()){
 			delete *o;
 			entity_pool.erase(o--);
-		}else{
-			(*o)->update(vehicle->viewingCamera());
 		}
 	}
-#elif VERSION==NEW
-	handlers.handlePhysics(&entities);
-	handlers.handleGeometry(&entities);
-
-	transformer.transformAll(&entities);
-#endif
-	handlers.handleControls(&controllables, &entity_pool);
 }
 
 void Game::render(){
-#if VERSION==OLD
-	for(std::vector<Object*>::iterator o=entity_pool.begin(); o!=entity_pool.end(); ++o){
-		(*o)->render();
-	}
-#elif VERSION==NEW
 	Pipeline::Renderer::renderEntities(&entity_pool);
-#endif
 }
 
 void Game::free(){

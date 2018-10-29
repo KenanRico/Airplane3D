@@ -36,23 +36,13 @@ void Bullet::define(GPUbuffer* gb, unsigned int s){
 	shd = s;
 }
 
-void Bullet::update(const Camera& camera){
-
-	/*-----handle physics----*/
-	physics_handler.handleAll();
-
+void Bullet::updateProperties(){
+	syncProperties();
 	/*-----update geometry----*/
 	geometry.position.current += direction * speed;
-
-	/*-----check if should be freed--------*/
-	if(glm::length(geometry.position.current - source->getGeometry()->position.current)>100.0f){
+	if(glm::length(geometry.position.current - source->getGeometry()->position.current)>150.0f){
 		exists = false;
 	}
-
-	/*-----compute&apply transforamtions----*/
-	struct Transformation transformation;
-	computeTransformations(camera);
-	updateProperties();
 }
 
 void Bullet::computeTransformations(const Camera& camera){

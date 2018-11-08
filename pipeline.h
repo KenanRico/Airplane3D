@@ -7,6 +7,7 @@
 #include <vector>
 
 class Object;
+
 namespace Pipeline{
 
 	namespace Updater{

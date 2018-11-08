@@ -96,10 +96,8 @@ void initGL(){
 }
 
 void initGame(){
-
-	Game::init();
 	EventHandler::init();
-	
+	Game::init();
 }
 
 void loop(){

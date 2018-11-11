@@ -16,6 +16,7 @@ namespace GameInitProc{
 	void createGPUBuffers(std::map<std::string, GPUbuffer*>*);
 	void createShaders(std::map<std::string, unsigned int>*);
 	void loadObjects(std::vector<Object*>*, const std::map<std::string, GPUbuffer*>&, const std::map<std::string, unsigned int>&);
+	void createLightings(std::vector<Lighting*>* lightings);
 };
 
 //----------------------------------------------------------------------

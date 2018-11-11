@@ -28,6 +28,7 @@ std::map<std::string, unsigned int> Game::shader_pool;
 std::vector<Object*> Game::entity_pool;
 std::vector<Object*> Game::controllables;
 Vehicle* Game::vehicle = nullptr;
+std::vector<Lighting*> Game::lightings;
 
 
 
@@ -45,9 +46,12 @@ void Game::init(){
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
+	GameInitProc::createLightings(&lightings);
 }
 
 void Game::runPipeline(){
+	/*-------------Update Lighting Environment----------------*/
+	Pipeline::EnvironmentUpdater::handleLighting(&lightings);
 	/*------------Update Handling Pipeline--------------*/
 	Pipeline::Updater::handleControls(&controllables, &entity_pool);
 	Pipeline::Updater::handlePhysics(&entity_pool);
@@ -64,7 +68,7 @@ void Game::runPipeline(){
 }
 
 void Game::render(){
-	Pipeline::Renderer::renderEntities(&entity_pool);
+	Pipeline::Renderer::renderEntities(&entity_pool, &lightings);
 }
 
 void Game::free(){
@@ -73,5 +77,8 @@ void Game::free(){
 	}
 	for(std::vector<Object*>::iterator o=entity_pool.begin(); o!=entity_pool.end(); ++o){
 		delete *o;
+	}
+	for(std::vector<Lighting*>::iterator lit=lightings.begin(); lit!=lightings.end(); ++lit){
+		delete *lit;
 	}
 }

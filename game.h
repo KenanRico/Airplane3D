@@ -19,6 +19,7 @@ class Game{
 		static std::vector<Object*> entity_pool;
 		static std::vector<Object*> controllables;
 		static Vehicle* vehicle;
+		static std::vector<Lighting*> lightings;
 
 	private:
 		Game() = delete;

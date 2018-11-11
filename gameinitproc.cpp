@@ -128,3 +128,8 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 	fs.close();
 }
 
+void GameInitProc::createLightings(std::vector<Lighting*>* lightings){
+	lightings->push_back(new PointLight(...));
+	lightings->push_back(new DirectionLight(...));
+}
+

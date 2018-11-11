@@ -12,6 +12,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+/*---------------------------------------Environment Update--------------------------------------------*/
+void Pipeline::EnvironmentUpdater::handleLighting(std::vector<Lighting*>* lightings){
+	for(std::vector<Lighting*>::const_iterator lyt=lightings.begin(); lyt!=lightings.end(); ++lyt){
+		(*lyt)->update();
+	}
+}
+
+
+
 
 /*----------------------------------Update Functions----------------------------------------------*/
 
@@ -62,16 +71,20 @@ void Pipeline::Transformer::transformAll(std::vector<Object*>* entities_ptr, con
 
 /*-------------------------------------Render Function-------------------------------------------*/
 
-void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities){
+void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, std::vector<Lighting*> const * lightings){
 	std::vector<Object*>::const_iterator end = entities->end();
 	for(std::vector<Object*>::const_iterator obj=entities->begin(); obj!=end; ++obj){
 		Object* object = *obj;
-		//send data to shader
+		//send object data to shader
 		unsigned int current_shader = object->shader;
 		Shader::useShader(current_shader);
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object->transformation.model.overall));
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object->transformation.view));
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object->transformation.projection));
+		//send lighting data to shader
+		for(std::vector<Lighting*>::const_iterator lyt=lightings.begin(); lyt!=lightings.end(); ++lyt){
+			(*lyt)->sendInfoToShader(current_shader);
+		}
 		//render
 		glBindVertexArray(object->ri.VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->ri.EBO);

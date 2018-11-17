@@ -14,7 +14,7 @@
 
 /*---------------------------------------Environment Update--------------------------------------------*/
 void Pipeline::EnvironmentUpdater::handleLighting(std::vector<Lighting*>* lightings){
-	for(std::vector<Lighting*>::const_iterator lyt=lightings.begin(); lyt!=lightings.end(); ++lyt){
+	for(std::vector<Lighting*>::iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 		(*lyt)->update();
 	}
 }
@@ -82,7 +82,7 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, s
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object->transformation.view));
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object->transformation.projection));
 		//send lighting data to shader
-		for(std::vector<Lighting*>::const_iterator lyt=lightings.begin(); lyt!=lightings.end(); ++lyt){
+		for(std::vector<Lighting*>::const_iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 			(*lyt)->sendInfoToShader(current_shader);
 		}
 		//render

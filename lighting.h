@@ -17,11 +17,11 @@ class Lighting{
 
 	public:
 		Lighting(float, const struct Color&);
-		virtual ~Lighting()
+		virtual ~Lighting();
 	private:
 		Lighting() = delete;
 		Lighting(const Lighting&) = delete;
-		Lighting& operator(const Lighting&) = delete;
+		Lighting& operator=(const Lighting&) = delete;
 
 	public:
 		virtual void update() = 0;

@@ -20,53 +20,96 @@
 void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffers){
 	//rectangle frame
 	float v0[] = {
-		-1.0f,1.0f,1.0f,0.0f,0.0f,-1.0f,
-		1.0f,1.0f,1.0f,0.0f,0.0f,-1.0f,
-		-1.0f,-1.0f,1.0f,0.0f,0.0f,-1.0f,
-		1.0f,1.0f,1.0f,0.0f,0.0f,-1.0f,
-		-1.0f,-1.0f,1.0f,0.0f,0.0f,-1.0f,
-		1.0f,-1.0f,1.0f,0.0f,0.0f,-1.0f,
+		-1.0f,1.0f,1.0f,
+		1.0f,1.0f,1.0f,
+		-1.0f,-1.0f,1.0f,
+		1.0f,1.0f,1.0f,
+		-1.0f,-1.0f,1.0f,
+		1.0f,-1.0f,1.0f,
 
-		-1.0f,1.0f,1.0f,-1.0,0.0,0.0,
-		-1.0f,-1.0f,1.0f,-1.0,0.0,0.0,
-		-1.0f,-1.0f,-1.0f,-1.0,0.0,0.0,
-		-1.0f,-1.0f,1.0f,-1.0,0.0,0.0,
-		-1.0f,-1.0f,-1.0f,-1.0,0.0,0.0,
-		-1.0f,1.0f,-1.0f,-1.0,0.0,0.0,
+		-1.0f,1.0f,1.0f,
+		-1.0f,-1.0f,1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f,1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,1.0f,-1.0f,
 
-		-1.0f,-1.0f,-1.0f,0.0f,0.0f,1.0f,
-		-1.0f,1.0f,-1.0f,0.0f,0.0f,1.0f,
-		1.0f,1.0f,-1.0f,0.0f,0.0f,1.0f,
-		-1.0f,1.0f,-1.0f,0.0f,0.0f,1.0f,
-		1.0f,1.0f,-1.0f,0.0f,0.0f,1.0f,
-		1.0f,-1.0f,-1.0f,0.0f,0.0f,1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,1.0f,-1.0f,
+		1.0f,1.0f,-1.0f,
+		-1.0f,1.0f,-1.0f,
+		1.0f,1.0f,-1.0f,
+		1.0f,-1.0f,-1.0f,
 
-		1.0f,1.0f,-1.0f,1.0,0.0,0.0,
-		1.0f,-1.0f,-1.0f,1.0,0.0,0.0,
-		1.0f,1.0f,1.0f,1.0,0.0,0.0,
-		1.0f,-1.0f,-1.0f,1.0,0.0,0.0,
-		1.0f,1.0f,1.0f,1.0,0.0,0.0,
-		1.0f,-1.0f,1.0f,1.0,0.0,0.0,
+		1.0f,1.0f,-1.0f,
+		1.0f,-1.0f,-1.0f,
+		1.0f,1.0f,1.0f,
+		1.0f,-1.0f,-1.0f,
+		1.0f,1.0f,1.0f,
+		1.0f,-1.0f,1.0f,
 
-		-1.0f,1.0f,1.0f,0.0f,1.0f,0.0f,
-		1.0f,1.0f,1.0f,0.0f,1.0f,0.0f,
-		-1.0f,1.0f,-1.0f,0.0f,1.0f,0.0f,
-		1.0f,1.0f,1.0f,0.0f,1.0f,0.0f,
-		-1.0f,1.0f,-1.0f,0.0f,1.0f,0.0f,
-		1.0f,1.0f,-1.0f,0.0f,1.0f,0.0f,
+		-1.0f,1.0f,1.0f,
+		1.0f,1.0f,1.0f,
+		-1.0f,1.0f,-1.0f,
+		1.0f,1.0f,1.0f,
+		-1.0f,1.0f,-1.0f,
+		1.0f,1.0f,-1.0f,
 
-		-1.0f,-1.0f,1.0f,0.0f,-1.0f,0.0f,
-		1.0f, -1.0f, 1.0f,0.0f,-1.0f,0.0f,
-		-1.0f,-1.0f,-1.0f,0.0f,-1.0f,0.0f,
-		1.0f, -1.0f, 1.0f,0.0f,-1.0f,0.0f,
-		-1.0f,-1.0f,-1.0f,0.0f,-1.0f,0.0f,
-		1.0f, -1.0f, -1.0f,0.0f,-1.0f,0.0f
+		-1.0f,-1.0f,1.0f,
+		1.0f, -1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		1.0f, -1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		1.0f, -1.0f, -1.0f
+	};
+	float n0[] = {
+		0.0f,0.0f,-1.0f,
+		0.0f,0.0f,-1.0f,
+		0.0f,0.0f,-1.0f,
+		0.0f,0.0f,-1.0f,
+		0.0f,0.0f,-1.0f,
+		0.0f,0.0f,-1.0f,
+
+		-1.0f,0.0f,0.0f,
+		-1.0f,0.0f,0.0f,
+		-1.0f,0.0f,0.0f,
+		-1.0f,0.0f,0.0f,
+		-1.0f,0.0f,0.0f,
+		-1.0f,0.0f,0.0f,
+
+		0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,
+
+		1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,
+
+		0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,
+
+		0.0f,-1.0f,0.0f,
+		0.0f,-1.0f,0.0f,
+		0.0f,-1.0f,0.0f,
+		0.0f,-1.0f,0.0f,
+		0.0f,-1.0f,0.0f,
+		0.0f,-1.0f,0.0f
 	};
 	unsigned int i0[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35};
 	//unsigned int i0[] = {0,1,2,1,2,3,0,2,6,0,4,6,4,6,7,4,7,5,5,1,7,1,7,3,0,1,4,1,4,5,2,6,3,6,3,7};
-	GLenum m0 = GL_LINE_LOOP;
+	GLenum m0 = GL_TRIANGLES;
 	gpu_buffers->insert(
-		std::make_pair("rectangle frame", new GPUbuffer(v0, sizeof(v0), 3, i0, sizeof(i0), sizeof(i0)/sizeof(unsigned int), m0))
+		std::make_pair("rectangle frame", new GPUbuffer(v0, sizeof(v0), 3, n0, sizeof(n0), 3, i0, sizeof(i0), sizeof(i0)/sizeof(unsigned int), m0))
 	);
 	//piramid frame
 	float v1[] = {
@@ -100,6 +143,7 @@ void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffe
 void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_pool){
 	shader_pool->insert(std::make_pair("marker", Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl")));
 	shader_pool->insert(std::make_pair("basic shader", Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl")));
+	shader_pool->insert(std::make_pair("basic shader 2", Shader::initShaders("shaders/VShader2.glsl", "shaders/FShader2.glsl")));
 }
 
 
@@ -135,7 +179,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			glm::vec3 revolution_orientation = glm::vec3();
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size>>revolution_speed>>revolution_orientation.x>>revolution_orientation.y>>revolution_orientation.z;
-			unsigned int s = shader_pool.find("basic shader")->second;
+			unsigned int s = shader_pool.find("basic shader 2")->second;
 			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new RevolvingPlanet(
@@ -163,7 +207,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 }
 
 void GameInitProc::createLightings(std::vector<Lighting*>* lightings){
-	lightings->push_back(new PointLight(...));
-	lightings->push_back(new DirectionLight(...));
+	//lightings->push_back(new PointLight(...));
+	//lightings->push_back(new DirectionLight(...));
 }
 

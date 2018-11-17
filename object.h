@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "gpubuffer.h"
 #include "pipeline.h"
+#include "lighting.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -15,7 +16,6 @@
 class Object{
 	protected:
 		struct RenderInfo{
-			unsigned int VBO;
 			unsigned int VAO;
 			unsigned int EBO;
 			unsigned int indices_count;
@@ -85,7 +85,7 @@ class Object{
 	protected:
 		void syncProperties();
 
-	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *);
+	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *);
 };
 
 //-------------------------------------------------------------

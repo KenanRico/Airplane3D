@@ -40,7 +40,7 @@ void Game::init(){
 	//create controllable object
 	vehicle = new Vehicle(
 		gpu_buffers.find("rectangle frame")->second,
-		Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl"),
+		shader_pool.find("basic shader 2")->second,
 		glm::vec3(-4.0, 2.0f, 3.0f), 4.0f, glm::vec3(1.0, 0.0, 0.0),
 		0.0f, 0.3f, 0.0f, 50.0f, 0.01f, 0.01f
 	);
@@ -68,7 +68,7 @@ void Game::runPipeline(){
 }
 
 void Game::render(){
-	Pipeline::Renderer::renderEntities(&entity_pool, &lightings);
+	Pipeline::Renderer::renderEntities(&entity_pool, &lightings, vehicle->viewingCamera());
 }
 
 void Game::free(){

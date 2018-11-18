@@ -34,17 +34,24 @@ unsigned int Shader::initShaders(const char* v_shader, const char* f_shader){
 	glCompileShader(vertexShader);
 	
 	int success = 0;
-	char infoLog[512]{};
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if(success){
-		std::string msg("Compiled vertex shader ");
+		std::string msg(
+			"-------------------------------------------------\nCompiled vertex shader "
+		);
 		msg += std::string(v_shader);
 		Logger::toConsole(Logger::L_INFO, msg);
 	}else{
-		glGetShaderInfoLog(vertexShader, 512, (GLsizei*)0, infoLog);
-		std::string msg("Cannot compile vertext shader for ");
-		msg += std::string(v_shader);
+		int length = 0;
+		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
+		char* info_log = new char[length];
+		glGetShaderInfoLog(vertexShader, length, (GLsizei*)0, info_log);
+		std::string msg(
+			">>>>>>>>>>>>>>>>>>>>ERROR:<<<<<<<<<<<<<<<<<<<<<<<\nCannot compile vertext shader for "
+		);
+		msg += std::string(v_shader)+", error is:\n"+std::string(info_log);
 		Logger::toConsole(Logger::L_ERROR, msg);
+		delete[] info_log;
 	}
 
 	unsigned int fragmentShader = 0;
@@ -68,17 +75,24 @@ unsigned int Shader::initShaders(const char* v_shader, const char* f_shader){
 	const char* fragmentShaderSource = fShaderSource.c_str();
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, (GLint*)0);
 	glCompileShader(fragmentShader);
-	char infoLog2[512]{};
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if(success){
-		std::string msg("Compiled fragment shader ");
+		std::string msg(
+			"-------------------------------------------------\nCompiled fragment shader "
+		);
 		msg += std::string(f_shader);
 		Logger::toConsole(Logger::L_INFO, msg);
 	}else{
-		glGetShaderInfoLog(vertexShader, 512, (GLsizei*)0, infoLog2);
-		std::string msg("Cannot compile fragment shader for ");
-		msg += std::string(f_shader);
+		int length = 0;
+		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
+		char* info_log = new char[length];
+		glGetShaderInfoLog(fragmentShader, length, (GLsizei*)0, info_log);
+		std::string msg(
+			">>>>>>>>>>>>>>>>>>>>ERROR:<<<<<<<<<<<<<<<<<<<<<<<\nCannot compile fragment shader for "
+		);
+		msg += std::string(f_shader)+", error is:\n"+std::string(info_log);
 		Logger::toConsole(Logger::L_ERROR, msg);
+		delete[] info_log;
 	}
 
 	unsigned int ID = glCreateProgram();

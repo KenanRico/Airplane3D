@@ -71,7 +71,7 @@ void Pipeline::Transformer::transformAll(std::vector<Object*>* entities_ptr, con
 
 /*-------------------------------------Render Function-------------------------------------------*/
 
-void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, std::vector<Lighting*> const * lightings){
+void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, std::vector<Lighting*> const * lightings, const Camera& camera){
 	std::vector<Object*>::const_iterator end = entities->end();
 	for(std::vector<Object*>::const_iterator obj=entities->begin(); obj!=end; ++obj){
 		Object* object = *obj;
@@ -81,6 +81,8 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, s
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object->transformation.model.overall));
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object->transformation.view));
 		glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object->transformation.projection));
+		const glm::vec3& camera_pos = camera.pos();
+		glUniform3f(glGetUniformLocation(current_shader, "view_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
 		//send lighting data to shader
 		for(std::vector<Lighting*>::const_iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 			(*lyt)->sendInfoToShader(current_shader);

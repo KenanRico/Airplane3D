@@ -85,7 +85,7 @@ class Object{
 	protected:
 		void syncProperties();
 
-	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *);
+	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *, const Camera&);
 };
 
 //-------------------------------------------------------------

@@ -48,7 +48,7 @@ void Vehicle::updateProperties(){
 	syncProperties();
 	geometry.position.current += velocity.magnitude * orientation.front;
 	float& speed = velocity.magnitude;
-	speed -= 0.0003f;
+	speed -= 0.003f;
 	const float& max = velocity.max;
 	const float& min = velocity.min;
 	if(speed>max){
@@ -107,20 +107,20 @@ void Vehicle::computeTransformations(const Camera& camera){
 void Vehicle::control(std::vector<Object*>* objects){
 	/*-------handle input, update object-------*/
 	if(EventHandler::keyDown(EventHandler::W)){
-		rotate(orientation.front, orientation.up, orientation.right, -0.1f);
+		rotate(orientation.front, orientation.up, orientation.right, -0.3f);
 	}
 	if(EventHandler::keyDown(EventHandler::A)){
-		rotate(orientation.right, orientation.up, orientation.front, 0.1f);
+		rotate(orientation.right, orientation.up, orientation.front, 0.3f);
 	}
 	if(EventHandler::keyDown(EventHandler::S)){
-		rotate(orientation.front, orientation.up, orientation.right, 0.1f);
+		rotate(orientation.front, orientation.up, orientation.right, 0.3f);
 	}
 	if(EventHandler::keyDown(EventHandler::D)){
-		rotate(orientation.right, orientation.up, orientation.front, -0.1f);
+		rotate(orientation.right, orientation.up, orientation.front, -0.3f);
 	}
 	float& speed = velocity.magnitude;
 	if(EventHandler::keyDown(EventHandler::SPACE)){
-		speed += 0.0004f;
+		speed += 0.004f;
 	}
 	if(EventHandler::keyClicked(EventHandler::C)){
 		cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];

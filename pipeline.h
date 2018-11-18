@@ -26,7 +26,7 @@ namespace Pipeline{
 	};
 
 	namespace Renderer{
-		void renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *);
+		void renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *, const Camera&);
 	};
 
 };

@@ -214,7 +214,7 @@ void GameInitProc::createLightings(std::vector<Lighting*>* lightings){
 	//lightings->push_back(new DirectionLight(...));
 	lightings->push_back(
 		new DirectionalLight(
-			1.7, (Lighting::Color){glm::vec3(0.1f,0.1f,0.1f), glm::vec3(0.4f,0.5f,0.3f), glm::vec3(0.4f,0.5f,0.3f)}, glm::vec3(0.1f, -0.9f, 0.0f)
+			1.8, (Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)}, glm::vec3(0.1f, -0.9f, 0.0f)
 		)
 	);
 }

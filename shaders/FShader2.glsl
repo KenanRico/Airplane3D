@@ -19,11 +19,20 @@ struct DirectionalLight{
 	vec3 diffuse;
 	vec3 specular;
 };
+struct PointLight{
+	vec position;
+	vec3 attenuation;
+	float intensity;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
 
 uniform Material material;
 uniform DirectionalLight dir_light;
+uniform DirectionalLight pnt_light;
 uniform vec3 view_pos;
-float environment_amb = 0.2f;
+float environment_amb = 0.4f;
 
 
 //-----------uniform vars----------
@@ -34,6 +43,7 @@ out vec4 FragColor;
 
 //************************helper func declare************************
 vec3 directionalLight(DirectionalLight, Material);
+vec3 pointLight(DirectionalLight, Material);
 
 
 
@@ -45,12 +55,12 @@ void main(){
 
 	//};
 	Material mat = {
-		vec3(0.1,0.1,0.1),
-		vec3(0.4,0.5,0.5),
-		vec3(0.5,0.65,0.65),
-		8.7f
+		vec3(0.2,0.2,0.2),
+		vec3(0.25,0.3,0.3),
+		vec3(0.3,0.4,0.4),
+		0.8f
 	};
-	final += directionalLight(dir_light, mat);
+	final += directionalLight(dir_light, mat) + pointLight(pnt_light, mat);
 
 	//assign final color to fragment
 	FragColor = vec4(final, 1.0);
@@ -70,7 +80,7 @@ vec3 directionalLight(DirectionalLight light, Material material){
 
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
-	float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), 32.0f);
+	float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), 8.0f);
 	vec3 specular = specularStrength * light.specular * material.specular;
 
 	vec3 finalLight = (ambient + diffuse + specular) * light.intensity; 
@@ -78,4 +88,11 @@ vec3 directionalLight(DirectionalLight light, Material material){
 	//light.intensity is factored into the result differently for different types of casters (i.e. flashlight's intensity will have small effects on ambient factor of a target object, meaning the backside of will stay relatively dark even with a strong light)
 	
 	return finalLight;
+}
+
+vec3 pointLight(PointLight light, Material material){
+
+	//implementation
+
+	return vec3(0.0,0.0,0.0);
 }

@@ -19,7 +19,7 @@ void DirectionalLight::update(){
 
 }
 
-void DirectionalLight::sendInfoToShader(unsigned int shader){
+void DirectionalLight::sendInfoToShader(unsigned int shader) const {
 	unsigned int ambient = glGetUniformLocation(shader, "dir_light.ambient");
 	glUniform3f(ambient, color.ambient.x, color.ambient.y, color.ambient.z);
 	unsigned int diffuse = glGetUniformLocation(shader, "dir_light.diffuse");

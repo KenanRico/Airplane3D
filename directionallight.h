@@ -20,7 +20,7 @@ class DirectionalLight: public Lighting{
 
 	public:
 		void update() override;
-		void sendInfoToShader(unsigned int) override;
+		void sendInfoToShader(unsigned int) const override;
 };
 
 //----------------------------------------------------------------------------------

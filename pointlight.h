@@ -16,7 +16,7 @@ class PointLight: public Lighting{
 			float kq;
 		};
 	private:
-		glm::vec3 Position;
+		glm::vec3 position;
 		AttenuationFactors attenuation;
 
 	public:
@@ -29,7 +29,7 @@ class PointLight: public Lighting{
 
 	public:
 		void update() override;
-		void sendInfoToShader(unsigned int) override;
+		void sendInfoToShader(unsigned int) const override;
 
 };
 

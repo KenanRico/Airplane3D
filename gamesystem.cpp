@@ -8,8 +8,8 @@
 
 #include <GLFW/glfw3.h>
 
-int GameSystem::window_width = 800;
-int GameSystem::window_height = 600;
+int GameSystem::window_width = 1200;
+int GameSystem::window_height = 900;
 GameSystem::State GameSystem::state = GameSystem::RUN;
 float GameSystem::time = glfwGetTime();
 float GameSystem::delta_time = 0.0f;

@@ -25,7 +25,7 @@ class Lighting{
 
 	public:
 		virtual void update() = 0;
-		virtual void sendInfoToShader(unsigned int) = 0;
+		virtual void sendInfoToShader(unsigned int) const = 0;
 };
 
 //----------------------------------------------------------------------------

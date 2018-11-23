@@ -9,6 +9,7 @@
 #include "shader.h"
 #include "lighting.h"
 #include "directionallight.h"
+#include "pointlight.h"
 
 #include <string>
 #include <vector>
@@ -210,11 +211,19 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 }
 
 void GameInitProc::createLightings(std::vector<Lighting*>* lightings){
-	//lightings->push_back(new PointLight(...));
-	//lightings->push_back(new DirectionLight(...));
 	lightings->push_back(
 		new DirectionalLight(
-			1.8, (Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)}, glm::vec3(0.1f, -0.9f, 0.0f)
+			1.8,
+			(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
+			glm::vec3(0.1f, -0.9f, 0.0f)
+		)
+	);
+	lightings->push_back(
+		new PointLight(
+			10.8,
+			(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
+			glm::vec3(10.1f, 10.9f, -6.0f),
+			(PointLight::AttenuationFactors){1.0f, 0.022f, 0.0019f}
 		)
 	);
 }

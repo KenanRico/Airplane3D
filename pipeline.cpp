@@ -74,13 +74,13 @@ void Pipeline::Transformer::transformAll(std::vector<Object*>* entities_ptr, con
 void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, std::vector<Lighting*> const * lightings, const Camera& camera){
 	std::vector<Object*>::const_iterator end = entities->end();
 	for(std::vector<Object*>::const_iterator obj=entities->begin(); obj!=end; ++obj){
-		Object* object = *obj;
+		const Object& object = *(*obj);
 		//send object data to shader
-		unsigned int current_shader = object->shader;
+		unsigned int current_shader = object.shader;
 		Shader::useShader(current_shader);
-		glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object->transformation.model.overall));
-		glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object->transformation.view));
-		glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object->transformation.projection));
+		glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object.transformation.model.overall));
+		glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object.transformation.view));
+		glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object.transformation.projection));
 		const glm::vec3& camera_pos = camera.pos();
 		glUniform3f(glGetUniformLocation(current_shader, "view_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
 		//send lighting data to shader
@@ -88,8 +88,8 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, s
 			(*lyt)->sendInfoToShader(current_shader);
 		}
 		//render
-		glBindVertexArray(object->ri.VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->ri.EBO);
-		glDrawElements(object->ri.mode, object->ri.indices_count, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(object.ri.VAO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);
+		glDrawElements(object.ri.mode, object.ri.indices_count, GL_UNSIGNED_INT, 0);
 	}
 }

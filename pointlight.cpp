@@ -9,7 +9,7 @@
 
 
 
-PointLight::PointLight(float inten, const Color& col, const glm::vec3& pos, const AttenuationFactors& att):
+PointLight::PointLight(float inten, const Color& col, const glm::vec3* pos, const AttenuationFactors& att):
 Lighting(inten, col),
 position(pos),
 attenuation(att){
@@ -21,7 +21,7 @@ PointLight::~PointLight(){
 }
 
 void PointLight::update(){
-	position.x+=0.1f;
+
 }
 
 void PointLight::sendInfoToShader(unsigned int shader) const {
@@ -29,6 +29,6 @@ void PointLight::sendInfoToShader(unsigned int shader) const {
 	glUniform3f(glGetUniformLocation(shader, "pnt_light.diffuse"), color.diffuse.x, color.diffuse.y, color.diffuse.z);
 	glUniform3f(glGetUniformLocation(shader, "pnt_light.specular"), color.specular.x, color.specular.y, color.specular.z);
 	glUniform1f(glGetUniformLocation(shader, "pnt_light.intensity"), intensity);
-	glUniform3f(glGetUniformLocation(shader, "pnt_light.position"), position.x, position.y, position.z);
+	glUniform3f(glGetUniformLocation(shader, "pnt_light.position"), position->x, position->y, position->z);
 	glUniform3f(glGetUniformLocation(shader, "pnt_light.attenuation"), attenuation.k, attenuation.kl, attenuation.kq);
 }

@@ -16,11 +16,11 @@ class PointLight: public Lighting{
 			float kq;
 		};
 	private:
-		glm::vec3 position;
+		glm::vec3 const * position;
 		AttenuationFactors attenuation;
 
 	public:
-		PointLight(float, const Color&, const glm::vec3&, const AttenuationFactors&);
+		PointLight(float, const Color&, glm::vec3 const *, const AttenuationFactors&);
 		~PointLight();
 	private:
 		PointLight() = delete;

@@ -80,6 +80,18 @@ const Camera& Vehicle::viewingCamera() const{
 	return *cameras.current;
 }
 
+const Camera& Vehicle::fpCamera() const{
+	return cameras.views[FP];
+}
+
+const Camera& Vehicle::tpCamera() const{
+	return cameras.views[TP];
+}
+
+const Camera& Vehicle::rearCamera() const{
+	return cameras.views[rear];
+}
+
 
 void Vehicle::computeTransformations(const Camera& camera){
 

@@ -23,7 +23,7 @@ RevolvingPlanet::~RevolvingPlanet(){
 
 void RevolvingPlanet::updateProperties(){
 	syncProperties();
-	geometry.position.current += glm::normalize(glm::cross(geometry.position.current, revolution.axis))*0.1f;
+	geometry.position.current += glm::normalize(glm::cross(geometry.position.current, revolution.axis))*revolution.speed;
 }
 
 void RevolvingPlanet::computeTransformations(const Camera& camera){

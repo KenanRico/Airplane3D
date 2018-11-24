@@ -4,6 +4,7 @@
 #include "object.h"
 #include "shader.h"
 #include "camera.h"
+#include "vehicle.h"
 
 #include <vector>
 
@@ -71,9 +72,12 @@ void Pipeline::Transformer::transformAll(std::vector<Object*>* entities_ptr, con
 
 /*-------------------------------------Render Function-------------------------------------------*/
 
-void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, std::vector<Lighting*> const * lightings, const Camera& camera){
+void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, Vehicle const * vehicle, std::vector<Lighting*> const * lightings, const Camera& camera){
 	std::vector<Object*>::const_iterator end = entities->end();
 	for(std::vector<Object*>::const_iterator obj=entities->begin(); obj!=end; ++obj){
+
+		if(*obj==(Object*)vehicle && &camera!=&(vehicle->tpCamera())) continue;
+
 		const Object& object = *(*obj);
 		//send object data to shader
 		unsigned int current_shader = object.shader;

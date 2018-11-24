@@ -10,6 +10,7 @@
 #include "lighting.h"
 #include "directionallight.h"
 #include "pointlight.h"
+#include "logger.h"
 
 #include <string>
 #include <vector>
@@ -34,15 +35,15 @@ void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffe
 		-1.0f,1.0f,-1.0f,
 		-1.0f,-1.0f,-1.0f,
 		-1.0f,-1.0f,1.0f,
-		-1.0f,-1.0f,-1.0f,
 		-1.0f,-1.0f,1.0f,
+		-1.0f,1.0f,-1.0f,
 		-1.0f,1.0f,1.0f,
 
 		-1.0f,-1.0f,1.0f,
 		-1.0f,1.0f,1.0f,
 		1.0f,1.0f,1.0f,
-		-1.0f,1.0f,1.0f,
 		1.0f,1.0f,1.0f,
+		-1.0f,-1.0f,1.0f,
 		1.0f,-1.0f,1.0f,
 
 		1.0f,1.0f,1.0f,
@@ -141,6 +142,7 @@ void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffe
 	gpu_buffers->insert(
 		std::make_pair("marker", new GPUbuffer(v2, sizeof(v2), 3, i2, sizeof(i2), sizeof(i2)/sizeof(unsigned int), m2))
 	);
+	Logger::toConsole(Logger::L_INFO, "Buffer objects initialized");
 }
 
 
@@ -148,6 +150,7 @@ void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_poo
 	shader_pool->insert(std::make_pair("marker", Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl")));
 	shader_pool->insert(std::make_pair("basic shader", Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl")));
 	shader_pool->insert(std::make_pair("basic shader 2", Shader::initShaders("shaders/VShader2.glsl", "shaders/FShader2.glsl")));
+	Logger::toConsole(Logger::L_INFO, "Shaders initialized");
 }
 
 
@@ -208,9 +211,10 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 		}
 	}
 	fs.close();
+	Logger::toConsole(Logger::L_INFO, "Objects initialized");
 }
 
-void GameInitProc::createLightings(std::vector<Lighting*>* lightings){
+void GameInitProc::createLightings(std::vector<Lighting*>* lightings, const std::vector<Object*>& sources){
 	lightings->push_back(
 		new DirectionalLight(
 			1.8,
@@ -218,13 +222,17 @@ void GameInitProc::createLightings(std::vector<Lighting*>* lightings){
 			glm::vec3(0.1f, -0.9f, 0.0f)
 		)
 	);
-	lightings->push_back(
-		new PointLight(
-			10.8,
-			(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
-			glm::vec3(10.1f, 10.9f, -6.0f),
-			(PointLight::AttenuationFactors){1.0f, 0.022f, 0.0019f}
-		)
-	);
+	for(std::vector<Object*>::const_iterator src=sources.begin(); src!=sources.end(); ++src){
+		lightings->push_back(
+			new PointLight(
+				15.8,
+				(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
+				&((*src)->getGeometry()->position.current),
+				(PointLight::AttenuationFactors){1.0f, 0.022f, 0.0019f}
+			)
+		);
+	}
+	//print to console
+	Logger::toConsole(Logger::L_INFO, "Lighting initialized");
 }
 

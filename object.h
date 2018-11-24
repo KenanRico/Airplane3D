@@ -12,7 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-
+class Vehicle;
 class Object{
 	protected:
 		struct RenderInfo{
@@ -85,7 +85,7 @@ class Object{
 	protected:
 		void syncProperties();
 
-	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *, const Camera&);
+	friend void Pipeline::Renderer::renderEntities(std::vector<Object*> const *, Vehicle const *, std::vector<Lighting*> const *, const Camera&);
 };
 
 //-------------------------------------------------------------

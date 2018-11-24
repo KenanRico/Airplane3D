@@ -46,7 +46,7 @@ void Game::init(){
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
-	GameInitProc::createLightings(&lightings);
+	GameInitProc::createLightings(&lightings, std::vector<Object*>{entity_pool[19]});
 }
 
 void Game::runPipeline(){
@@ -68,7 +68,7 @@ void Game::runPipeline(){
 }
 
 void Game::render(){
-	Pipeline::Renderer::renderEntities(&entity_pool, &lightings, vehicle->viewingCamera());
+	Pipeline::Renderer::renderEntities(&entity_pool, vehicle, &lightings, vehicle->viewingCamera());
 }
 
 void Game::free(){

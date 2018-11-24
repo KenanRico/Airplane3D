@@ -53,6 +53,9 @@ class Vehicle : public Object{
 		void updateProperties() override;
 		void computeTransformations(const Camera&) override;
 		const Camera& viewingCamera() const;
+		const Camera& fpCamera() const;
+		const Camera& tpCamera() const;
+		const Camera& rearCamera() const;
 		void control(std::vector<Object*>*) override;
 };
 

@@ -8,6 +8,7 @@
 #include <vector>
 
 class Object;
+class Vehicle;
 
 namespace Pipeline{
 
@@ -26,7 +27,7 @@ namespace Pipeline{
 	};
 
 	namespace Renderer{
-		void renderEntities(std::vector<Object*> const *, std::vector<Lighting*> const *, const Camera&);
+		void renderEntities(std::vector<Object*> const *, Vehicle const *, std::vector<Lighting*> const *, const Camera&);
 	};
 
 };

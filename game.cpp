@@ -46,7 +46,7 @@ void Game::init(){
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
-	GameInitProc::createLightings(&lightings, std::vector<Object*>{entity_pool[19]});
+	GameInitProc::createLightings(&lightings, std::vector<Object*>{entity_pool[19], entity_pool[15], entity_pool[11]});
 }
 
 void Game::runPipeline(){

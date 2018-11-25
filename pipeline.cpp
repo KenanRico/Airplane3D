@@ -5,6 +5,8 @@
 #include "shader.h"
 #include "camera.h"
 #include "vehicle.h"
+#include "lighting.h"
+#include "pointlight.h"
 
 #include <vector>
 
@@ -91,6 +93,7 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, V
 		for(std::vector<Lighting*>::const_iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 			(*lyt)->sendInfoToShader(current_shader);
 		}
+		PointLight::sendResetIndex(current_shader);
 		//render
 		glBindVertexArray(object.ri.VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);

@@ -225,8 +225,8 @@ void GameInitProc::createLightings(std::vector<Lighting*>* lightings, const std:
 	for(std::vector<Object*>::const_iterator src=sources.begin(); src!=sources.end(); ++src){
 		lightings->push_back(
 			new PointLight(
-				15.8,
-				(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
+				25.8,
+				(Lighting::Color){glm::vec3(0.2f,0.2f,0.2f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
 				&((*src)->getGeometry()->position.current),
 				(PointLight::AttenuationFactors){1.0f, 0.022f, 0.0019f}
 			)

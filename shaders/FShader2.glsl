@@ -1,5 +1,8 @@
 #version 440 core
 
+#define PLMAX 16
+
+
 //------------input vars------------
 in vec3 fragPos;
 in vec3 normal;
@@ -30,12 +33,13 @@ struct PointLight{
 
 uniform Material material;
 uniform DirectionalLight dir_light;
-uniform PointLight pnt_light;
+uniform PointLight pnt_light[PLMAX];
+uniform int pl_count;
 uniform vec3 view_pos;
 float environment_amb = 0.4f;
 
 
-//-----------uniform vars----------
+//-----------output vars----------
 out vec4 FragColor;
 
 
@@ -51,17 +55,16 @@ vec3 pointLight(PointLight, Material);
 void main(){
 	//calc final color
 	vec3 final = vec3(0.0f, 0.0f, 0.0f);
-	//DirectionalLight dl = {
-
-	//};
 	Material mat = {
-		vec3(0.1,0.1,0.2),
-		vec3(0.1,0.1,0.2),
-		vec3(0.1,0.1,0.2),
+		vec3(0.03,0.1,0.1),
+		vec3(0.03,0.1,0.1),
+		vec3(0.03,0.1,0.1),
 		0.8f
 	};
-	final += directionalLight(dir_light, mat) + pointLight(pnt_light, mat);
-	//final += directionalLight(dir_light, mat);
+	final += directionalLight(dir_light, mat);
+	for(int i=0; i<pl_count; ++i){
+		final += pointLight(pnt_light[i], mat);
+	}
 
 	//assign final color to fragment
 	FragColor = vec4(final, 1.0);
@@ -93,6 +96,7 @@ vec3 directionalLight(DirectionalLight light, Material material){
 
 vec3 pointLight(PointLight light, Material material){
 
+	vec3 material_ambient_sum = vec3(0.0f, 0.0f, 0.0f);
 	vec3 ambient = environment_amb * light.ambient * material.ambient;
 
 	vec3 lightDir = normalize((light.position-fragPos));

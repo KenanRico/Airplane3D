@@ -91,6 +91,10 @@ void initGL(){
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	//culling 
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_FRONT);
+
 	//all done, print GL version
 	Logger::toConsole(Logger::L_INFO, (const char*)glGetString(GL_VERSION));
 }
@@ -112,7 +116,7 @@ void update(){
 	Game::runPipeline();
 }
 void render(){
-	glClearColor(0.01f, 0.05f, 0.2f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	Game::render();
 	glBindVertexArray(0);

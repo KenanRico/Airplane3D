@@ -100,3 +100,6 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, V
 		glDrawElements(object.ri.mode, object.ri.indices_count, GL_UNSIGNED_INT, 0);
 	}
 }
+
+
+

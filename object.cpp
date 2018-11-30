@@ -47,7 +47,9 @@ void Object::computeTransformations(const Camera& camera){
 	transformation.model.translate = glm::translate(identity, geometry.position.current);
 	transformation.model.overall = transformation.model.translate * transformation.model.rotate * transformation.model.scale;
 	transformation.view = glm::lookAt(camera.pos(), camera.lensPos(), camera.straightUp());
-	transformation.projection = glm::perspective(glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance());
+	transformation.projection = glm::perspective(
+		glm::radians(camera.fov()), (float)GameSystem::windowW()/(float)GameSystem::windowH(), 0.1f, camera.renderDistance()
+	);
 }
 
 void Object::syncProperties(){
@@ -73,3 +75,4 @@ void Object::control(std::vector<Object*>*){
 bool Object::isAlive() const{
 	return exists;
 }
+

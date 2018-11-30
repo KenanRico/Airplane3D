@@ -19,6 +19,7 @@ class Object{
 			unsigned int VAO;
 			unsigned int EBO;
 			unsigned int indices_count;
+			unsigned int instance_array_ID;
 			GLenum mode;
 		};
 		struct Position{

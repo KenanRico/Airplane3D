@@ -6,6 +6,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -47,6 +48,7 @@ void PointLight::sendResetIndex(unsigned int shader){
 }
 
 std::string getLightNameInShader(const std::string& light, int ID){
-	static int offset = (int)'0'-0;
-	return light+"["+std::string(1,(char)(ID+offset))+"]";
+	std::stringstream ss;
+	ss<<ID;
+	return light+"["+ss.str()+"]";
 }

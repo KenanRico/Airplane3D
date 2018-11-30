@@ -70,3 +70,4 @@ void GPUbuffer::queryRenderInfo(unsigned int* ur_VAO, unsigned int* ur_EBO, unsi
 	*ur_ic = indices_count;
 	*ur_m = mode;
 }
+

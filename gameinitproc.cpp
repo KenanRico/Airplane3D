@@ -171,11 +171,11 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			glm::vec3 rotation_orientation = glm::vec3();
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size>>rotation_speed>>rotation_orientation.x>>rotation_orientation.y>>rotation_orientation.z;
-			unsigned int s = shader_pool.find("basic shader")->second;
+			unsigned int s = shader_pool.find("basic shader 2")->second;
 			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new StationaryPlanet(
-					gpu_buffers.find("piramid frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
+					gpu_buffers.find("rectangle frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
 				)
 			);
 		}else if(type=="rePlanet"){
@@ -223,15 +223,16 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 void GameInitProc::createLightings(std::vector<Lighting*>* lightings, const std::vector<Object*>& sources){
 	lightings->push_back(
 		new DirectionalLight(
-			1.8,
+			2.0,
 			(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
 			glm::vec3(0.1f, -0.9f, 0.0f)
 		)
 	);
+	float intensity = 5.5f;
 	for(std::vector<Object*>::const_iterator src=sources.begin(); src!=sources.end(); ++src){
 		lightings->push_back(
 			new PointLight(
-				25.8,
+				intensity+=5.0f,
 				(Lighting::Color){glm::vec3(0.2f,0.2f,0.2f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
 				&((*src)->getGeometry()->position.current),
 				(PointLight::AttenuationFactors){1.0f, 0.022f, 0.0019f}

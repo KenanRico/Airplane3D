@@ -95,6 +95,9 @@ void initGL(){
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_FRONT);
 
+	//gamma correction (can also be done manually in fragment shader)
+	//glEnable(GL_FRAMEBUFFER_SRGB);
+
 	//all done, print GL version
 	Logger::toConsole(Logger::L_INFO, (const char*)glGetString(GL_VERSION));
 }

@@ -1,5 +1,6 @@
 #include "gamesystem.h"
 #include "eventhandler.h"
+#include "previewer.h"
 
 #include <stdexcept>
 #include <string>
@@ -14,6 +15,7 @@ GameSystem::State GameSystem::state = GameSystem::RUN;
 float GameSystem::time = glfwGetTime();
 float GameSystem::delta_time = 0.0f;
 int GameSystem::FPS = 0;
+Previewer GameSystem::previewer;
 
 
 int GameSystem::windowW(){
@@ -54,6 +56,8 @@ void GameSystem::update(){
 	FPS = (int)(1.0f/delta_time);
 	//query window size
 	glfwGetWindowSize(window, &window_width, &window_height);
+	//update viewing mode
+	previewer.update();
 }
 
 

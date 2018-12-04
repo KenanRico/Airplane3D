@@ -6,7 +6,7 @@
 
 class EventHandler{
 	public:
-		enum KEYS { ESC=0, W=1, A=2, S=3, D=4, SPACE=5, LSHIFT=6, C=7, LCTRL=8, J=9 };
+		enum KEYS { ESC=0, W=1, A=2, S=3, D=4, SPACE=5, LSHIFT=6, C=7, LCTRL=8, J=9, G=10, ONE=11, TWO=12, THREE=13};
 		enum BUTTONS { LEFT=0, MID=1, RIGHT=2 };
 		enum COMPONENTS { X=0, Y=1 };
 	private:

@@ -12,8 +12,8 @@ Milestones:
 2 - Low level rendering framework (GPU buffer objects, array objects, shaders)
 3 - Vertex transformation mechanisms (Object transformations, Coordinate system, cameras)
 4 - OOP hierarchy (object hierarchy, camera hierarchy)
-5 - Physics/control refinement (physics, flight rotation, collision, combat) <----------------------------------------------current milestone
+5 - Physics/control refinement (physics, flight rotation, collision, combat) 
 
-6 - Object refinement (textures, model loading, lighting)
+6 - Object refinement (textures, model loading, lighting) <----------------------------------------------current milestone
 7 - environment (skybox, audio)
 8 - GUI design

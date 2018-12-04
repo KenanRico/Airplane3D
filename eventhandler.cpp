@@ -4,7 +4,7 @@
 
 
 
-struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 10, (bool*)0 , (bool*)0 };
+struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 14, (bool*)0 , (bool*)0 };
 struct EventHandler::Mouse EventHandler::mouse = (struct EventHandler::Mouse){
 	{ 0.0f, 0.0f },
 	{ {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
@@ -154,6 +154,42 @@ void EventHandler::keyboardCallback(GLFWwindow* w, int key, int scancode, int ac
 		}
 	}else if(key==GLFW_KEY_J && action==GLFW_RELEASE){
 		keyboard.held[J] = false;
+	}
+
+	if(key==GLFW_KEY_G && action==GLFW_PRESS){
+		if(!keyboard.held[G]){
+			keyboard.click[G] = true;
+			keyboard.held[G] = true;
+		}
+	}else if(key==GLFW_KEY_G && action==GLFW_RELEASE){
+		keyboard.held[G] = false;
+	}
+
+	if(key==GLFW_KEY_1 && action==GLFW_PRESS){
+		if(!keyboard.held[ONE]){
+			keyboard.click[ONE] = true;
+			keyboard.held[ONE] = true;
+		}
+	}else if(key==GLFW_KEY_1 && action==GLFW_RELEASE){
+		keyboard.held[ONE] = false;
+	}
+
+	if(key==GLFW_KEY_2 && action==GLFW_PRESS){
+		if(!keyboard.held[TWO]){
+			keyboard.click[TWO] = true;
+			keyboard.held[TWO] = true;
+		}
+	}else if(key==GLFW_KEY_2 && action==GLFW_RELEASE){
+		keyboard.held[TWO] = false;
+	}
+
+	if(key==GLFW_KEY_3 && action==GLFW_PRESS){
+		if(!keyboard.held[THREE]){
+			keyboard.click[THREE] = true;
+			keyboard.held[THREE] = true;
+		}
+	}else if(key==GLFW_KEY_3 && action==GLFW_RELEASE){
+		keyboard.held[THREE] = false;
 	}
 
 }

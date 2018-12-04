@@ -6,11 +6,11 @@
 #include "gpubuffer.h"
 #include "vehicle.h"
 #include "debugcamera.h"
+#include "previewer.h"
 
 #include <string>
 #include <vector>
 #include <map>
-
 
 class Game{
 	protected:
@@ -32,6 +32,8 @@ class Game{
 		static void runPipeline();
 		static void render();
 		static void free();
+
+	friend void Previewer::enableShaderGamma(bool) const;
 };
 
 //-------------------------------------------------------------

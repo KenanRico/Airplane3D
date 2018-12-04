@@ -84,9 +84,10 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, V
 		//send object data to shader
 		unsigned int current_shader = object.shader;
 		Shader::useShader(current_shader);
-		glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object.transformation.model.overall));
-		glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object.transformation.view));
-		glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object.transformation.projection));
+		//glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object.transformation.model.overall));
+		//glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object.transformation.view));
+		//glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object.transformation.projection));
+		object.sendInfoToShader(current_shader);
 		const glm::vec3& camera_pos = camera.pos();
 		glUniform3f(glGetUniformLocation(current_shader, "view_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
 		//send lighting data to shader

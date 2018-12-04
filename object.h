@@ -82,6 +82,7 @@ class Object{
 		virtual void updateProperties();
 		virtual void control(std::vector<Object*>*);
 		virtual void computeTransformations(const Camera&);
+		virtual void sendInfoToShader(unsigned int) const;
 		bool isAlive() const;
 	protected:
 		void syncProperties();

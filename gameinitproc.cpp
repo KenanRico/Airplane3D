@@ -184,13 +184,19 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			float size = 0.0f;
 			float revolution_speed = 0.0f;
 			glm::vec3 revolution_orientation = glm::vec3();
+			glm::vec3 material;
 			//parse into above fields
-			ss>>pos.x>>pos.y>>pos.z>>size>>revolution_speed>>revolution_orientation.x>>revolution_orientation.y>>revolution_orientation.z;
+			ss
+				>>pos.x>>pos.y>>pos.z
+				>>size
+				>>revolution_speed
+				>>revolution_orientation.x>>revolution_orientation.y>>revolution_orientation.z
+				>>material.x>>material.y>>material.z;
 			unsigned int s = shader_pool.find("basic shader 2")->second;
 			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new RevolvingPlanet(
-					gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation)
+					gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
 				)
 			);
 		}else if(type=="marker"){

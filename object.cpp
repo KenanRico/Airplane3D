@@ -52,13 +52,18 @@ void Object::computeTransformations(const Camera& camera){
 	);
 }
 
+void Object::sendInfoToShader(unsigned int shader) const{
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(transformation.model.overall));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(transformation.view));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(transformation.projection));
+}
+
 void Object::syncProperties(){
 	//synchronize positioning and sizing
 	geometry.position.last = geometry.position.current;
 	geometry.rotation.last = geometry.rotation.current;
 	geometry.size.last = geometry.size.current;
 }
-
 
 struct Object::GeometricProperties* Object::getGeometry(){
 	return &geometry;

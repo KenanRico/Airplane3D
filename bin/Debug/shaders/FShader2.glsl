@@ -3,9 +3,6 @@
 #define PLMAX 16
 
 
-//------------global vars------------
-float environment_amb = 0.4f;
-
 //------------input vars------------
 in vec3 fragPos;
 in vec3 normal;
@@ -13,7 +10,9 @@ in vec3 normal;
 
 //-----------uniform vars----------
 struct Material{
-	vec3 color;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 	float shininess;
 };
 struct DirectionalLight{
@@ -32,11 +31,12 @@ struct PointLight{
 	vec3 specular;
 };
 
+uniform Material material;
 uniform DirectionalLight dir_light;
 uniform PointLight pnt_light[PLMAX];
 uniform int pl_count;
 uniform vec3 view_pos;
-uniform vec3 material;
+float environment_amb = 0.4f;
 
 
 //-----------output vars----------
@@ -56,7 +56,9 @@ void main(){
 	//calc final color
 	vec3 final = vec3(0.0f, 0.0f, 0.0f);
 	Material mat = {
-		material,
+		vec3(0.03,0.1,0.1),
+		vec3(0.03,0.1,0.1),
+		vec3(0.03,0.1,0.1),
 		0.8f
 	};
 	final += directionalLight(dir_light, mat);
@@ -73,19 +75,19 @@ void main(){
 //************************helper func definition************************
 vec3 directionalLight(DirectionalLight light, Material material){
 
-	vec3 ambient = environment_amb * light.ambient * material.color;
+	vec3 ambient = environment_amb * light.ambient * material.ambient;
 
 	vec3 lightDir = normalize(-light.direction);
 	vec3 norm = normalize(normal);
 	float diffuseStrength = max(dot(norm, lightDir), 0.0f);
-	vec3 diffuse = diffuseStrength * light.diffuse * material.color;
+	vec3 diffuse = diffuseStrength * light.diffuse * material.diffuse;
 
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	vec3 halfway = normalize(viewDir+lightDir);
 	//float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), 32.0f);
 	float specularStrength = pow(max(dot(norm, halfway), 0.0f), 64.0f);
-	vec3 specular = specularStrength * light.specular * material.color;
+	vec3 specular = specularStrength * light.specular * material.specular;
 
 	vec3 finalLight = (ambient + diffuse + specular) * light.intensity; 
 
@@ -97,23 +99,22 @@ vec3 directionalLight(DirectionalLight light, Material material){
 vec3 pointLight(PointLight light, Material material){
 
 	vec3 material_ambient_sum = vec3(0.0f, 0.0f, 0.0f);
-	vec3 ambient = environment_amb * light.ambient * material.color;
+	vec3 ambient = environment_amb * light.ambient * material.ambient;
 
 	vec3 lightDir = normalize(light.position-fragPos);
 	vec3 norm = normalize(normal);
 	float diffuseStrength = max(dot(norm, lightDir), 0.0f);
-	vec3 diffuse = diffuseStrength * light.diffuse * pow(material.color, vec3(10.2));
-	//vec3 diffuse = diffuseStrength * light.diffuse * material.color;
+	vec3 diffuse = diffuseStrength * light.diffuse * material.ambient;
 
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	vec3 halfway = normalize(lightDir+viewDir);
 	//float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), 32.0f);
 	float specularStrength = pow(max(dot(norm, halfway), 0.0f), 128.0f);
-	vec3 specular = specularStrength * light.specular * material.color;
+	vec3 specular = specularStrength * light.specular * material.specular;
 
 	float distance = length(light.position - fragPos);
-	float attenuation = 1.0f / (light.attenuation.x + light.attenuation.y*distance + light.attenuation.z*(distance));
+	float attenuation = 1.0f / (light.attenuation.x + light.attenuation.y*distance + light.attenuation.z*(distance*distance));
 
 	vec3 finalLight = (ambient + diffuse + specular) * attenuation * light.intensity; 
 

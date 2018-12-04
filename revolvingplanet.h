@@ -17,6 +17,7 @@ class RevolvingPlanet : public Object{
 	private:
 		static float scale;
 		struct Revolution revolution;
+		glm::vec3 material;
 		/*inherited members:
 			struct RenderInfo ri;
 			unsigned int shader;
@@ -26,7 +27,7 @@ class RevolvingPlanet : public Object{
 		*/
 
 	public:
-		RevolvingPlanet(GPUbuffer const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&);
+		RevolvingPlanet(GPUbuffer const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&, const glm::vec3&);
 		virtual ~RevolvingPlanet();
 	private:
 		RevolvingPlanet() = delete;
@@ -36,6 +37,7 @@ class RevolvingPlanet : public Object{
 	public:
 		void updateProperties() override;
 		void computeTransformations(const Camera&) override;
+		void sendInfoToShader(unsigned int) const override;
 };
 
 //----------------------------------------------------------------

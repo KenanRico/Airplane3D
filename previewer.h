@@ -2,13 +2,13 @@
 #define PREVIEWER_H
 //----------------------------------------------------------------------------------
 
+#include <map>
+#include <string>
+
 class Previewer{
 
 	private:
-		enum class GammaMode {NONE, DEFAULT, CUSTOM};
-
-	private:
-		GammaMode gamma;
+		std::map<std::string, bool> settings;
 
 	public:
 		Previewer();
@@ -19,7 +19,6 @@ class Previewer{
 
 	public:
 		void update();
-		void enableShaderGamma(bool) const;
 
 };
 

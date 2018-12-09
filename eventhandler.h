@@ -1,17 +1,20 @@
 #ifndef EVENT_HANDLER_H
 #define EVEnT_HANDLER_H
 //------------------------------------------------------------------
+#include <vector>
+
 #include <glfw/glfw3.h>
 
 
 class EventHandler{
 	public:
-		enum KEYS { ESC=0, W=1, A=2, S=3, D=4, SPACE=5, LSHIFT=6, C=7, LCTRL=8, J=9, G=10, ONE=11, TWO=12, THREE=13};
+		enum KEYS { ESC=0, W=1, A=2, S=3, D=4, SPACE=5, LSHIFT=6, C=7, LCTRL=8, J=9, ONE=10, TWO=11, THREE=12, G=13, P=14, L=15};
 		enum BUTTONS { LEFT=0, MID=1, RIGHT=2 };
 		enum COMPONENTS { X=0, Y=1 };
 	private:
 		static struct Keyboard{
 			int key_count;
+			std::vector<int> keys;
 			bool* click;
 			bool* held;
 		} keyboard;

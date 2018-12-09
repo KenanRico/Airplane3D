@@ -38,7 +38,9 @@ uniform PointLight pnt_light[PLMAX];
 uniform int pl_count;
 uniform vec3 view_pos;
 uniform vec3 material;
-uniform bool correct_gamma;
+uniform bool previewer_correct_gamma;
+uniform bool previewer_blinn_phong;
+uniform bool previewer_lighting;
 
 
 //-----------output vars----------
@@ -55,19 +57,21 @@ vec3 pointLight(PointLight, Material);
 
 //************************main function************************
 void main(){
-	//calc final color
-	vec3 final = vec3(0.0f, 0.0f, 0.0f);
-	Material mat = {
-		material,
-		0.8f
-	};
-	final += directionalLight(dir_light, mat);
-	for(int i=0; i<pl_count; ++i){
-		final += pointLight(pnt_light[i], mat);
-	}
-
 	//assign final color to fragment
-	if(correct_gamma){
+	vec3 final = vec3(0.0f, 0.0f, 0.0f);
+	if(previewer_lighting){
+		Material mat = {
+			material,
+			0.8f
+		};
+		final += directionalLight(dir_light, mat);
+		for(int i=0; i<pl_count; ++i){
+			final += pointLight(pnt_light[i], mat);
+		}
+	}else{
+		final = material;
+	}
+	if(previewer_correct_gamma){
 		FragColor = vec4(pow(final, vec3(1.0/gamma)), 1.0);
 	}else{
 		FragColor = vec4(final, 1.0);
@@ -89,8 +93,8 @@ vec3 directionalLight(DirectionalLight light, Material material){
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	vec3 halfway = normalize(viewDir+lightDir);
-	//float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), 32.0f);
-	float specularStrength = pow(max(dot(norm, halfway), 0.0f), 64.0f);
+	float angle = previewer_blinn_phong ? dot(norm, halfway) : dot(viewDir, reflectDir);
+	float specularStrength = pow(max(angle, 0.0f), 64.0f);
 	vec3 specular = specularStrength * light.specular * material.color;
 
 	vec3 finalLight = (ambient + diffuse + specular) * light.intensity; 
@@ -113,12 +117,13 @@ vec3 pointLight(PointLight light, Material material){
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	vec3 halfway = normalize(lightDir+viewDir);
-	//float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), 32.0f);
-	float specularStrength = pow(max(dot(norm, halfway), 0.0f), 64.0f);
+	float angle = previewer_blinn_phong ? dot(norm, halfway) : dot(viewDir, reflectDir);
+	float specularStrength = pow(max(angle, 0.0f), 64.0f);
 	vec3 specular = specularStrength * light.specular * material.color;
 
 	float distance = length(light.position - fragPos);
-	float attenuation = 1.0f / (light.attenuation.x + light.attenuation.y*distance + light.attenuation.z * (correct_gamma ? (distance*distance) : distance));
+	float attenuation = 
+		1.0f / (light.attenuation.x + light.attenuation.y*distance + light.attenuation.z * (previewer_correct_gamma ? (distance*distance) : distance));
 
 	vec3 finalLight = (ambient + diffuse + specular) * attenuation * light.intensity; 
 

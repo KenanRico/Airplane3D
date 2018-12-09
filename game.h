@@ -33,7 +33,7 @@ class Game{
 		static void render();
 		static void free();
 
-	friend void Previewer::enableShaderGamma(bool) const;
+	friend void Previewer::update();
 };
 
 //-------------------------------------------------------------

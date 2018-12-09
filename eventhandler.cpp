@@ -1,10 +1,34 @@
 #include "eventhandler.h"
 
+#include <vector>
+
 #include <glfw/glfw3.h>
 
 
 
-struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){ 14, (bool*)0 , (bool*)0 };
+struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){
+	16,
+	std::vector<int>{
+		GLFW_KEY_ESCAPE,
+		GLFW_KEY_W,
+		GLFW_KEY_A,
+		GLFW_KEY_S,
+		GLFW_KEY_D,
+		GLFW_KEY_SPACE,
+		GLFW_KEY_LEFT_SHIFT,
+		GLFW_KEY_C,
+		GLFW_KEY_LEFT_CONTROL,
+		GLFW_KEY_J,
+		GLFW_KEY_1,
+		GLFW_KEY_2,
+		GLFW_KEY_3,
+		GLFW_KEY_G,
+		GLFW_KEY_P,
+		GLFW_KEY_L
+	},
+	(bool*)0,
+	(bool*)0 
+};
 struct EventHandler::Mouse EventHandler::mouse = (struct EventHandler::Mouse){
 	{ 0.0f, 0.0f },
 	{ {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
@@ -66,132 +90,16 @@ void EventHandler::end(){
 
 //callback for key press
 void EventHandler::keyboardCallback(GLFWwindow* w, int key, int scancode, int action, int mods){
-	if(key==GLFW_KEY_ESCAPE && action==GLFW_PRESS){
-		if(!keyboard.held[ESC]){
-			keyboard.click[ESC] = true;
-			keyboard.held[ESC] = true;
+	for(int i=0; i<keyboard.key_count; ++i){
+		if(key==keyboard.keys[i] && action==GLFW_PRESS){
+			if(!keyboard.held[i]){
+				keyboard.click[i] = true;
+				keyboard.held[i] = true;
+			}
+		}else if(key==keyboard.keys[i] && action==GLFW_RELEASE){
+			keyboard.held[i] = false;
 		}
-	}else if(key==GLFW_KEY_ESCAPE && action==GLFW_RELEASE){
-		keyboard.held[ESC] = false;
 	}
-
-	if(key==GLFW_KEY_W && action==GLFW_PRESS){
-		if(!keyboard.held[W]){
-			keyboard.click[W] = true;
-			keyboard.held[W] = true;
-		}
-	}else if(key==GLFW_KEY_W && action==GLFW_RELEASE){
-		keyboard.held[W] = false;
-	}
-
-	if(key==GLFW_KEY_S && action==GLFW_PRESS){
-		if(!keyboard.held[S]){
-			keyboard.click[S] = true;
-			keyboard.held[S] = true;
-		}
-	}else if(key==GLFW_KEY_S && action==GLFW_RELEASE){
-		keyboard.held[S] = false;
-	}
-
-	if(key==GLFW_KEY_A && action==GLFW_PRESS){
-		if(!keyboard.held[A]){
-			keyboard.click[A] = true;
-			keyboard.held[A] = true;
-		}
-	}else if(key==GLFW_KEY_A && action==GLFW_RELEASE){
-		keyboard.held[A] = false;
-	}
-
-	if(key==GLFW_KEY_D && action==GLFW_PRESS){
-		if(!keyboard.held[D]){
-			keyboard.click[D] = true;
-			keyboard.held[D] = true;
-		}
-	}else if(key==GLFW_KEY_D && action==GLFW_RELEASE){
-		keyboard.held[D] = false;
-	}
-
-	if(key==GLFW_KEY_SPACE && action==GLFW_PRESS){
-		if(!keyboard.held[SPACE]){
-			keyboard.click[SPACE] = true;
-			keyboard.held[SPACE] = true;
-		}
-	}else if(key==GLFW_KEY_SPACE && action==GLFW_RELEASE){
-		keyboard.held[SPACE] = false;
-	}
-
-	if(key==GLFW_KEY_LEFT_SHIFT && action==GLFW_PRESS){
-		if(!keyboard.held[LSHIFT]){
-			keyboard.click[LSHIFT] = true;
-			keyboard.held[LSHIFT] = true;
-		}
-	}else if(key==GLFW_KEY_LEFT_SHIFT && action==GLFW_RELEASE){
-		keyboard.held[LSHIFT] = false;
-	}
-
-	if(key==GLFW_KEY_C && action==GLFW_PRESS){
-		if(!keyboard.held[C]){
-			keyboard.click[C] = true;
-			keyboard.held[C] = true;
-		}
-	}else if(key==GLFW_KEY_C && action==GLFW_RELEASE){
-		keyboard.held[C] = false;
-	}
-
-	if(key==GLFW_KEY_LEFT_CONTROL && action==GLFW_PRESS){
-		if(!keyboard.held[LCTRL]){
-			keyboard.click[LCTRL] = true;
-			keyboard.held[LCTRL] = true;
-		}
-	}else if(key==GLFW_KEY_LEFT_CONTROL && action==GLFW_RELEASE){
-		keyboard.held[LCTRL] = false;
-	}
-
-	if(key==GLFW_KEY_J && action==GLFW_PRESS){
-		if(!keyboard.held[J]){
-			keyboard.click[J] = true;
-			keyboard.held[J] = true;
-		}
-	}else if(key==GLFW_KEY_J && action==GLFW_RELEASE){
-		keyboard.held[J] = false;
-	}
-
-	if(key==GLFW_KEY_G && action==GLFW_PRESS){
-		if(!keyboard.held[G]){
-			keyboard.click[G] = true;
-			keyboard.held[G] = true;
-		}
-	}else if(key==GLFW_KEY_G && action==GLFW_RELEASE){
-		keyboard.held[G] = false;
-	}
-
-	if(key==GLFW_KEY_1 && action==GLFW_PRESS){
-		if(!keyboard.held[ONE]){
-			keyboard.click[ONE] = true;
-			keyboard.held[ONE] = true;
-		}
-	}else if(key==GLFW_KEY_1 && action==GLFW_RELEASE){
-		keyboard.held[ONE] = false;
-	}
-
-	if(key==GLFW_KEY_2 && action==GLFW_PRESS){
-		if(!keyboard.held[TWO]){
-			keyboard.click[TWO] = true;
-			keyboard.held[TWO] = true;
-		}
-	}else if(key==GLFW_KEY_2 && action==GLFW_RELEASE){
-		keyboard.held[TWO] = false;
-	}
-
-	if(key==GLFW_KEY_3 && action==GLFW_PRESS){
-		if(!keyboard.held[THREE]){
-			keyboard.click[THREE] = true;
-			keyboard.held[THREE] = true;
-		}
-	}else if(key==GLFW_KEY_3 && action==GLFW_RELEASE){
-		keyboard.held[THREE] = false;
-	}
-
 }
 
 //callback for cursor position

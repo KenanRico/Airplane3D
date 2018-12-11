@@ -70,12 +70,6 @@ void initGL(){
 	//set input mode
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	//set viewport
-	int window_w = 0;
-	int window_h = 0;
-	glfwGetWindowSize(window, &window_w, &window_h);
-	glViewport(0, 0, window_w, window_h);
-
 	//set framebuffersize callback
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
@@ -118,6 +112,8 @@ void update(){
 void render(){
 	glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glViewport(0, 0, GameSystem::windowW(), GameSystem::windowH());
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Game::render();
 	glBindVertexArray(0);
 	glfwSwapBuffers(window);

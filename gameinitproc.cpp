@@ -150,6 +150,7 @@ void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_poo
 	shader_pool->insert(std::make_pair("marker", Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl")));
 	shader_pool->insert(std::make_pair("basic shader", Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl")));
 	shader_pool->insert(std::make_pair("basic shader 2", Shader::initShaders("shaders/VShader2.glsl", "shaders/FShader2.glsl")));
+	shader_pool->insert(std::make_pair("shadow shader", Shader::initShaders("shaders/Vshadow.glsl", "shaders/Fshadow.glsl")));
 	Logger::toConsole(Logger::L_INFO, "Shaders initialized");
 }
 
@@ -243,3 +244,9 @@ void GameInitProc::createLightings(std::vector<Lighting*>* lightings, const std:
 	Logger::toConsole(Logger::L_INFO, "Lighting initialized");
 }
 
+void GameInitProc::createShadows(std::vector<Shadow*>* shadows, const std::vector<Lighting*>& lightings){
+	shadows->push_back(new Shadow(lightings[0]));
+	for(std::vector<Lighting*>::const_iterator light=lightings.begin(); light!=lightings.end(); ++light){
+		//shadows.push_back(new Shadow(*light));
+	}
+}

@@ -6,7 +6,9 @@
 #include "gpubuffer.h"
 #include "vehicle.h"
 #include "debugcamera.h"
+#include "lighting.h"
 #include "previewer.h"
+#include "shadow.h"
 
 #include <string>
 #include <vector>
@@ -20,6 +22,7 @@ class Game{
 		static std::vector<Object*> controllables;
 		static Vehicle* vehicle;
 		static std::vector<Lighting*> lightings;
+		static std::vector<Shadow*> shadows;
 
 	private:
 		Game() = delete;

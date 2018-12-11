@@ -12,6 +12,8 @@
 #include "debugcamera.h"
 #include "pipeline.h"
 #include "bullet.h"
+#include "lighting.h"
+#include "shadow.h"
 
 #include <vector>
 #include <map>
@@ -29,7 +31,7 @@ std::vector<Object*> Game::entity_pool;
 std::vector<Object*> Game::controllables;
 Vehicle* Game::vehicle = nullptr;
 std::vector<Lighting*> Game::lightings;
-
+std::vector<Shadow*> Game::shadows;
 
 
 void Game::init(){
@@ -37,6 +39,8 @@ void Game::init(){
 	GameInitProc::createShaders(&shader_pool);
 	GameInitProc::loadObjects(&entity_pool, gpu_buffers, shader_pool);
 	Bullet::define(gpu_buffers.find("marker")->second, shader_pool.find("marker")->second);
+	GameInitProc::createLightings(&lightings, std::vector<Object*>{entity_pool[19], entity_pool[15], entity_pool[11]});
+	GameInitProc::createShadows(&shadows, lightings);
 	//create controllable object
 	vehicle = new Vehicle(
 		gpu_buffers.find("rectangle frame")->second,
@@ -46,18 +50,20 @@ void Game::init(){
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
-	GameInitProc::createLightings(&lightings, std::vector<Object*>{entity_pool[19], entity_pool[15], entity_pool[11]});
+	//Shadow::initShadowSystem();
 }
 
 void Game::runPipeline(){
-	/*-------------Update Lighting Environment----------------*/
-	Pipeline::EnvironmentUpdater::handleLighting(&lightings);
 	/*------------Update Handling Pipeline--------------*/
 	Pipeline::Updater::handleControls(&controllables, &entity_pool);
 	Pipeline::Updater::handlePhysics(&entity_pool);
 	Pipeline::Updater::handlePropertyUpdate(&entity_pool);
 	/*---------------Transformation Handler------------------*/
 	Pipeline::Transformer::transformAll(&entity_pool, vehicle->viewingCamera());
+	/*-------------Update Lighting Environment----------------*/
+	Pipeline::EnvironmentUpdater::handleLighting(&lightings);
+	/*-------------Update Shadow Mapping----------------*/
+	Pipeline::EnvironmentUpdater::updateShadow(&shadows, entity_pool, shader_pool["shadow shader"]);
 	/*---------------Check whether object should still exist--------------------*/
 	for(std::vector<Object*>::iterator o=entity_pool.begin(); o!=entity_pool.end(); ++o){
 		if(!(*o)->isAlive()){
@@ -68,7 +74,7 @@ void Game::runPipeline(){
 }
 
 void Game::render(){
-	Pipeline::Renderer::renderEntities(&entity_pool, vehicle, &lightings, vehicle->viewingCamera());
+	Pipeline::Renderer::renderEntities(&entity_pool, vehicle, &lightings, shadows, vehicle->viewingCamera());
 }
 
 void Game::free(){
@@ -80,5 +86,8 @@ void Game::free(){
 	}
 	for(std::vector<Lighting*>::iterator lit=lightings.begin(); lit!=lightings.end(); ++lit){
 		delete *lit;
+	}
+	for(std::vector<Shadow*>::iterator shadow=shadows.begin(); shadow!=shadows.end(); ++shadow){
+		delete *shadow;
 	}
 }

@@ -10,6 +10,7 @@ float gamma = 2.2;
 //------------input vars------------
 in vec3 fragPos;
 in vec3 normal;
+in vec4 light_space_frag_pos;
 
 
 //-----------uniform vars----------
@@ -38,6 +39,7 @@ uniform PointLight pnt_light[PLMAX];
 uniform int pl_count;
 uniform vec3 view_pos;
 uniform vec3 material;
+uniform sampler2D shadow_map;
 uniform bool previewer_correct_gamma;
 uniform bool previewer_blinn_phong;
 uniform bool previewer_lighting;
@@ -50,8 +52,10 @@ out vec4 FragColor;
 
 
 //************************helper func declare************************
+float getShadow();
 vec3 directionalLight(DirectionalLight, Material);
 vec3 pointLight(PointLight, Material);
+
 
 
 
@@ -81,6 +85,15 @@ void main(){
 
 
 //************************helper func definition************************
+float getShadow(){
+	vec3 projection_coords = light_space_frag_pos.xyz / light_space_frag_pos.w;
+	projection_coords = projection_coords*0.5f + 0.5f;
+	float closest_depth = texture(shadow_map, projection_coords.xy).r;
+	float current_depth = projection_coords.z;
+	float shadow = (current_depth>closest_depth) ? 1.0f : 0.0f;
+	return shadow;
+}
+
 vec3 directionalLight(DirectionalLight light, Material material){
 
 	vec3 ambient = environment_amb * light.ambient * material.color;
@@ -97,7 +110,9 @@ vec3 directionalLight(DirectionalLight light, Material material){
 	float specularStrength = pow(max(angle, 0.0f), 64.0f);
 	vec3 specular = specularStrength * light.specular * material.color;
 
-	vec3 finalLight = (ambient + diffuse + specular) * light.intensity; 
+	float shadow = getShadow();
+
+	vec3 finalLight = (ambient + (1.0f-shadow)*(diffuse + specular)) * light.intensity; 
 
 	//light.intensity is factored into the result differently for different types of casters (i.e. flashlight's intensity will have small effects on ambient factor of a target object, meaning the backside of will stay relatively dark even with a strong light)
 	

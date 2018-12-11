@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "stationaryplanet.h"
 #include "revolvingplanet.h"
+#include "lighting.h"
+#include "shadow.h"
 
 #include <vector>
 #include <map>
@@ -17,6 +19,7 @@ namespace GameInitProc{
 	void createShaders(std::map<std::string, unsigned int>*);
 	void loadObjects(std::vector<Object*>*, const std::map<std::string, GPUbuffer*>&, const std::map<std::string, unsigned int>&);
 	void createLightings(std::vector<Lighting*>*, const std::vector<Object*>&);
+	void createShadows(std::vector<Shadow*>*, const std::vector<Lighting*>&);
 };
 
 //----------------------------------------------------------------------

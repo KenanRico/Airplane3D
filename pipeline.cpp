@@ -15,15 +15,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-/*---------------------------------------Environment Update--------------------------------------------*/
-void Pipeline::EnvironmentUpdater::handleLighting(std::vector<Lighting*>* lightings){
-	for(std::vector<Lighting*>::iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
-		(*lyt)->update();
-	}
-}
-
-
-
 
 /*----------------------------------Update Functions----------------------------------------------*/
 
@@ -74,7 +65,13 @@ void Pipeline::Transformer::transformAll(std::vector<Object*>* entities_ptr, con
 
 /*-------------------------------------Render Function-------------------------------------------*/
 
-void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, Vehicle const * vehicle, std::vector<Lighting*> const * lightings, const Camera& camera){
+void Pipeline::Renderer::renderEntities(
+	std::vector<Object*> const * entities,
+	Vehicle const * vehicle,
+	std::vector<Lighting*> const * lightings,
+	const std::vector<Shadow*>& shadows,
+	const Camera& camera
+){
 	std::vector<Object*>::const_iterator end = entities->end();
 	for(std::vector<Object*>::const_iterator obj=entities->begin(); obj!=end; ++obj){
 
@@ -84,9 +81,6 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, V
 		//send object data to shader
 		unsigned int current_shader = object.shader;
 		Shader::useShader(current_shader);
-		//glUniformMatrix4fv(glGetUniformLocation(current_shader, "model"), 1, GL_FALSE, glm::value_ptr(object.transformation.model.overall));
-		//glUniformMatrix4fv(glGetUniformLocation(current_shader, "view"), 1, GL_FALSE, glm::value_ptr(object.transformation.view));
-		//glUniformMatrix4fv(glGetUniformLocation(current_shader, "projection"), 1, GL_FALSE, glm::value_ptr(object.transformation.projection));
 		object.sendInfoToShader(current_shader);
 		const glm::vec3& camera_pos = camera.pos();
 		glUniform3f(glGetUniformLocation(current_shader, "view_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
@@ -95,6 +89,14 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, V
 			(*lyt)->sendInfoToShader(current_shader);
 		}
 		PointLight::sendResetIndex(current_shader);
+		//send shadow data to shader
+		for(std::vector<Shadow*>::const_iterator shadow=shadows.begin(); shadow!=shadows.end(); ++shadow){
+			glUniformMatrix4fv(glGetUniformLocation(current_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr((*shadow)->getLSM()));
+			unsigned int shadow_map = (*shadow)->getDepthMapTexture();
+			glBindTexture(GL_TEXTURE_2D, shadow_map);
+			glActiveTexture(GL_TEXTURE0);
+			glUniform1i(glGetUniformLocation(current_shader, "shadow_map"), GL_TEXTURE0);
+		}
 		//render
 		glBindVertexArray(object.ri.VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);
@@ -104,3 +106,32 @@ void Pipeline::Renderer::renderEntities(std::vector<Object*> const * entities, V
 
 
 
+/*---------------------------------------Environment Update--------------------------------------------*/
+void Pipeline::EnvironmentUpdater::handleLighting(std::vector<Lighting*>* lightings){
+	for(std::vector<Lighting*>::iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
+		(*lyt)->update();
+	}
+}
+
+void Pipeline::EnvironmentUpdater::updateShadow(std::vector<Shadow*>* shadows, const std::vector<Object*>& objects, unsigned int shadow_shader){
+	glViewport(0, 0, Shadow::shadow_width, Shadow::shadow_height);
+	Shader::useShader(shadow_shader);
+	for(std::vector<Shadow*>::iterator shad=shadows->begin(); shad!=shadows->end(); ++shad){
+		//update light space matrix
+		Shadow& shadow = *(*shad);
+		shadow.updateLightSpaceMat();
+		//gen depth map
+		glBindFramebuffer(GL_FRAMEBUFFER, shadow.getDepthMapFBO());
+		glClear(GL_DEPTH_BUFFER_BIT);
+		for(std::vector<Object*>::const_iterator obj=objects.begin(); obj!=objects.end(); ++obj){
+			const Object& object = *(*obj);
+			glUniformMatrix4fv(glGetUniformLocation(shadow_shader, "model"), 1, GL_FALSE, glm::value_ptr(object.transformation.model.overall));
+			glUniformMatrix4fv(glGetUniformLocation(shadow_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr(shadow.getLSM()));
+			//render scene as if it's a regular render
+			glBindVertexArray(object.ri.VAO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);
+			glDrawElements(object.ri.mode, object.ri.indices_count, GL_UNSIGNED_INT, 0);
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}

@@ -4,6 +4,7 @@
 
 #include "camera.h"
 #include "lighting.h"
+#include "shadow.h"
 
 #include <vector>
 
@@ -14,6 +15,7 @@ namespace Pipeline{
 
 	namespace EnvironmentUpdater{
 		void handleLighting(std::vector<Lighting*>*);
+		void updateShadow(std::vector<Shadow*>*, const std::vector<Object*>&, unsigned int);
 	};
 
 	namespace Updater{
@@ -27,7 +29,7 @@ namespace Pipeline{
 	};
 
 	namespace Renderer{
-		void renderEntities(std::vector<Object*> const *, Vehicle const *, std::vector<Lighting*> const *, const Camera&);
+		void renderEntities(std::vector<Object*> const *, Vehicle const *, std::vector<Lighting*> const *, const std::vector<Shadow*>&, const Camera&);
 	};
 
 };

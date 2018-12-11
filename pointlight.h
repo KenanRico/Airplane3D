@@ -32,6 +32,7 @@ class PointLight: public Lighting{
 		void update() override;
 		void sendInfoToShader(unsigned int) const override;
 		static void sendResetIndex(unsigned int);
+		void calcLightSpaceMatrix(glm::mat4*) const override;
 
 };
 

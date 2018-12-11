@@ -16,7 +16,6 @@ direction(dir){}
 DirectionalLight::~DirectionalLight(){}
 
 void DirectionalLight::update(){
-
 }
 
 void DirectionalLight::sendInfoToShader(unsigned int shader) const {
@@ -30,4 +29,10 @@ void DirectionalLight::sendInfoToShader(unsigned int shader) const {
 	glUniform1f(shading_intensity, intensity);
 	unsigned int shading_direction = glGetUniformLocation(shader, "dir_light.direction");
 	glUniform3f(shading_direction, direction.x, direction.y, direction.z);
+}
+
+void DirectionalLight::calcLightSpaceMatrix(glm::mat4* lsm) const{
+	glm::mat4 light_proj = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 300.0f);
+	glm::mat4 light_view = glm::lookAt(direction*-300.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	*lsm = light_proj*light_view;
 }

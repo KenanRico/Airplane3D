@@ -21,6 +21,7 @@ class DirectionalLight: public Lighting{
 	public:
 		void update() override;
 		void sendInfoToShader(unsigned int) const override;
+		void calcLightSpaceMatrix(glm::mat4*) const override;
 };
 
 //----------------------------------------------------------------------------------

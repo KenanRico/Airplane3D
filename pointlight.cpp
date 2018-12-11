@@ -47,6 +47,10 @@ void PointLight::sendResetIndex(unsigned int shader){
 	index = 0;
 }
 
+void PointLight::calcLightSpaceMatrix(glm::mat4* lsm) const{
+	//TODO: implement
+}
+
 std::string getLightNameInShader(const std::string& light, int ID){
 	std::stringstream ss;
 	ss<<ID;

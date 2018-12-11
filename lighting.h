@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include <glm/glm.hpp>
+
 class Lighting{
 	public:
 		struct Color{
@@ -14,7 +16,6 @@ class Lighting{
 	protected:
 		float intensity;
 		struct Color color;
-
 	public:
 		Lighting(float, const struct Color&);
 		virtual ~Lighting();
@@ -26,6 +27,7 @@ class Lighting{
 	public:
 		virtual void update() = 0;
 		virtual void sendInfoToShader(unsigned int) const = 0;
+		virtual void calcLightSpaceMatrix(glm::mat4*) const = 0;
 };
 
 //----------------------------------------------------------------------------

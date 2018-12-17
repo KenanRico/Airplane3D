@@ -22,8 +22,11 @@ Shadow::Shadow(Lighting const * src): depth_map_FBO(-1), depth_map(-1), source(s
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadow_width, shadow_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (GLvoid const *)0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float border_color[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	//attach depth map as FBO's depth buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, depth_map_FBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_map, 0);
@@ -39,10 +42,6 @@ Shadow::~Shadow(){
 void Shadow::updateLightSpaceMat(){
 	//calc light space
 	source->calcLightSpaceMatrix(&light_space_mat);
-}
-
-void Shadow::sendInfoToShader() const{
-	//send light_space_mat and depth_map to shader for actual rendering
 }
 
 unsigned int Shadow::getDepthMapFBO() const{

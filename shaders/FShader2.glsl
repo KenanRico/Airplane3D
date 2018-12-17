@@ -52,7 +52,7 @@ out vec4 FragColor;
 
 
 //************************helper func declare************************
-float getShadow();
+float getShadow(vec3, vec3);
 vec3 directionalLight(DirectionalLight, Material);
 vec3 pointLight(PointLight, Material);
 
@@ -85,12 +85,21 @@ void main(){
 
 
 //************************helper func definition************************
-float getShadow(){
-	vec3 projection_coords = light_space_frag_pos.xyz / light_space_frag_pos.w;
-	projection_coords = projection_coords*0.5f + 0.5f;
-	float closest_depth = texture(shadow_map, projection_coords.xy).r;
+float getShadow(vec3 normal, vec3 light_dir){
+	float shadow = 0.0f;
+	vec3 projection_coords = light_space_frag_pos.xyz / light_space_frag_pos.w * 0.5f +0.5f;
 	float current_depth = projection_coords.z;
-	float shadow = (current_depth>closest_depth) ? 1.0f : 0.0f;
+	if(current_depth<=1.0f){
+		//float closest_depth = texture(shadow_map, projection_coords.xy).r;
+		vec2 texel_size = 1.0 / textureSize(shadow_map, 0);
+		for(int x=-1; x<2; ++x){
+			for(int y=-1; y<2; ++y){
+				float pcf_depth = texture(shadow_map, projection_coords.xy+vec2(x,y)*texel_size).r;
+				shadow += (current_depth-max(0.05*(1.0-dot(normal, light_dir)), 0.005)>pcf_depth) ? 1.0f : 0.0f;
+			}
+		}
+		shadow /= 9.0;
+	}
 	return shadow;
 }
 
@@ -110,7 +119,7 @@ vec3 directionalLight(DirectionalLight light, Material material){
 	float specularStrength = pow(max(angle, 0.0f), 64.0f);
 	vec3 specular = specularStrength * light.specular * material.color;
 
-	float shadow = getShadow();
+	float shadow = getShadow(norm, lightDir);
 
 	vec3 finalLight = (ambient + (1.0f-shadow)*(diffuse + specular)) * light.intensity; 
 

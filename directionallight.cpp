@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "previewer.h"
 
 
 DirectionalLight::DirectionalLight(float _intensity, const struct Color& _color, const glm::vec3& dir):
@@ -32,7 +33,7 @@ void DirectionalLight::sendInfoToShader(unsigned int shader) const {
 }
 
 void DirectionalLight::calcLightSpaceMatrix(glm::mat4* lsm) const{
-	glm::mat4 light_proj = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 300.0f);
-	glm::mat4 light_view = glm::lookAt(direction*-300.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 light_proj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 48.0f);
+	glm::mat4 light_view = glm::lookAt(-direction*45.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	*lsm = light_proj*light_view;
 }

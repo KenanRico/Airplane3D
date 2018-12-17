@@ -224,16 +224,16 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 void GameInitProc::createLightings(std::vector<Lighting*>* lightings, const std::vector<Object*>& sources){
 	lightings->push_back(
 		new DirectionalLight(
-			2.0,
+			10.0,
 			(Lighting::Color){glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
-			glm::vec3(0.1f, -0.9f, 0.0f)
+			glm::normalize(glm::vec3(-0.8f, 0.4f, 0.3f))
 		)
 	);
-	float intensity = 5.5f;
+	float intensity = 3.5f;
 	for(std::vector<Object*>::const_iterator src=sources.begin(); src!=sources.end(); ++src){
 		lightings->push_back(
 			new PointLight(
-				intensity+=5.0f,
+				intensity+=2.0f,
 				(Lighting::Color){glm::vec3(0.2f,0.2f,0.2f), glm::vec3(0.9f,0.9f,0.9f), glm::vec3(0.9f,0.9f,0.9f)},
 				&((*src)->getGeometry()->position.current),
 				(PointLight::AttenuationFactors){1.0f, 0.022f, 0.0019f}

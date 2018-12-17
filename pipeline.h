@@ -13,11 +13,6 @@ class Vehicle;
 
 namespace Pipeline{
 
-	namespace EnvironmentUpdater{
-		void handleLighting(std::vector<Lighting*>*);
-		void updateShadow(std::vector<Shadow*>*, const std::vector<Object*>&, unsigned int);
-	};
-
 	namespace Updater{
 		void handleControls(std::vector<Object*>*, std::vector<Object*>*);
 		void handlePhysics(std::vector<Object*>*);
@@ -30,6 +25,11 @@ namespace Pipeline{
 
 	namespace Renderer{
 		void renderEntities(std::vector<Object*> const *, Vehicle const *, std::vector<Lighting*> const *, const std::vector<Shadow*>&, const Camera&);
+	};
+
+	namespace EnvironmentUpdater{
+		void handleLighting(std::vector<Lighting*>*);
+		void updateShadow(std::vector<Shadow*>*, const std::vector<Object*>&, unsigned int);
 	};
 
 };

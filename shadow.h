@@ -28,7 +28,6 @@ class Shadow{ //a shadow is the shadow system from a single light source
 
 	public:
 		void updateLightSpaceMat();
-		void sendInfoToShader() const;
 		unsigned int getDepthMapFBO() const;
 		const glm::mat4& getLSM() const;
 		unsigned int getDepthMapTexture() const;

@@ -100,9 +100,9 @@ void Vehicle::computeTransformations(const Camera& camera){
 	//model
 	struct ModelTransformation* model = &(transformation.model);
 	model->scale = glm::scale(identity, geometry.size.current);
-	model->rotate = glm::rotate(identity, acos(glm::dot(glm::vec3(0.0f,0.0f,-1.0f), orientation.front)), orientation.right);
-	model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(0.0f,1.0f,0.0f), orientation.up)), orientation.front);
-	model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(1.0f,0.0f,0.0f), orientation.front)), orientation.up);
+	//model->rotate = glm::rotate(identity, acos(glm::dot(glm::vec3(0.0f,0.0f,-1.0f), orientation.front)), orientation.right);
+	//model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(0.0f,1.0f,0.0f), orientation.up)), orientation.front);
+	//model->rotate = glm::rotate(model->rotate, acos(glm::dot(glm::vec3(1.0f,0.0f,0.0f), orientation.front)), orientation.up);
 	model->translate = glm::translate(identity, geometry.position.current);
 	model->overall = model->translate * model->rotate * model->scale;
 	//view
@@ -132,7 +132,11 @@ void Vehicle::control(std::vector<Object*>* objects){
 	}
 	float& speed = velocity.magnitude;
 	if(EventHandler::keyDown(EventHandler::SPACE)){
-		speed += 0.004f;
+		if(EventHandler::keyDown(EventHandler::LCTRL)){
+			speed -= 0.4f;
+		}else{
+			speed += 0.004f;
+		}
 	}
 	if(EventHandler::keyClicked(EventHandler::C)){
 		cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];

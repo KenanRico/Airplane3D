@@ -84,6 +84,7 @@ void Pipeline::Renderer::renderEntities(
 		object.sendInfoToShader(current_shader);
 		const glm::vec3& camera_pos = camera.pos();
 		glUniform3f(glGetUniformLocation(current_shader, "view_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
+		glUniform1i(glGetUniformLocation(current_shader, "shadow_map"), GL_TEXTURE0);
 		//send lighting data to shader
 		for(std::vector<Lighting*>::const_iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 			(*lyt)->sendInfoToShader(current_shader);
@@ -93,9 +94,8 @@ void Pipeline::Renderer::renderEntities(
 		for(std::vector<Shadow*>::const_iterator shadow=shadows.begin(); shadow!=shadows.end(); ++shadow){
 			glUniformMatrix4fv(glGetUniformLocation(current_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr((*shadow)->getLSM()));
 			unsigned int shadow_map = (*shadow)->getDepthMapTexture();
-			glBindTexture(GL_TEXTURE_2D, shadow_map);
 			glActiveTexture(GL_TEXTURE0);
-			glUniform1i(glGetUniformLocation(current_shader, "shadow_map"), GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, shadow_map);
 		}
 		//render
 		glBindVertexArray(object.ri.VAO);

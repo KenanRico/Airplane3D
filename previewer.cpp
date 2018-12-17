@@ -9,7 +9,6 @@
 #include <map>
 #include <cstring>
 
-
 Previewer::Previewer(){
 	//init default settings
 	settings.insert(std::make_pair("previewer_lighting", true));
@@ -60,4 +59,5 @@ void Previewer::update(){
 			glUniform1i(glGetUniformLocation(s, setting->first.c_str()), setting->second);
 		}
 	}
+
 }

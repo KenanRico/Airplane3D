@@ -1,7 +1,6 @@
 #ifndef GAME_SYSTEM_H
 #define GAME_SYSTEM_H
 //-------------------------------------------------------------
-#include "previewer.h"
 
 #include <string>
 
@@ -18,7 +17,6 @@ class GameSystem{
 		static float time;
 		static float delta_time;
 		static int FPS;
-		static Previewer previewer;
 	private:
 		GameSystem() = delete;
 		~GameSystem() = delete;

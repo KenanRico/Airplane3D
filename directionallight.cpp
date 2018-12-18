@@ -7,8 +7,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "previewer.h"
-
 
 DirectionalLight::DirectionalLight(float _intensity, const struct Color& _color, const glm::vec3& dir):
 Lighting(_intensity, _color),

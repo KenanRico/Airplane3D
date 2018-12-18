@@ -14,6 +14,7 @@
 #include "bullet.h"
 #include "lighting.h"
 #include "shadow.h"
+#include "graphicssystem.h"
 
 #include <vector>
 #include <map>
@@ -25,6 +26,7 @@
 
 
 
+GraphicsSystem Game::graphics;
 std::map<std::string, GPUbuffer*> Game::gpu_buffers;
 std::map<std::string, unsigned int> Game::shader_pool;
 std::vector<Object*> Game::entity_pool;
@@ -50,7 +52,8 @@ void Game::init(){
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
-	//Shadow::initShadowSystem();
+	graphics.initHDR();
+	graphics.setClientShaders(std::vector<unsigned int>{shader_pool.find("basic shader 2")->second});
 }
 
 void Game::runPipeline(){
@@ -71,9 +74,12 @@ void Game::runPipeline(){
 			entity_pool.erase(o--);
 		}
 	}
+	/*---------------Update graphics--------------------*/
+	graphics.update();
 }
 
 void Game::render(){
+	graphics.commit();
 	Pipeline::Renderer::renderEntities(&entity_pool, vehicle, &lightings, shadows, vehicle->viewingCamera());
 }
 

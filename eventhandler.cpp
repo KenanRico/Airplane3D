@@ -7,7 +7,7 @@
 
 
 struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Keyboard){
-	16,
+	17,
 	std::vector<int>{
 		GLFW_KEY_ESCAPE,
 		GLFW_KEY_W,
@@ -24,7 +24,8 @@ struct EventHandler::Keyboard EventHandler::keyboard = (struct EventHandler::Key
 		GLFW_KEY_3,
 		GLFW_KEY_G,
 		GLFW_KEY_P,
-		GLFW_KEY_L
+		GLFW_KEY_L,
+		GLFW_KEY_H
 	},
 	(bool*)0,
 	(bool*)0 

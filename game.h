@@ -7,8 +7,8 @@
 #include "vehicle.h"
 #include "debugcamera.h"
 #include "lighting.h"
-#include "previewer.h"
 #include "shadow.h"
+#include "graphicssystem.h"
 
 #include <string>
 #include <vector>
@@ -16,6 +16,7 @@
 
 class Game{
 	protected:
+		static GraphicsSystem graphics;
 		static std::map<std::string, GPUbuffer*> gpu_buffers;
 		static std::map<std::string, unsigned int> shader_pool;
 		static std::vector<Object*> entity_pool;
@@ -36,7 +37,6 @@ class Game{
 		static void render();
 		static void free();
 
-	friend void Previewer::update();
 };
 
 //-------------------------------------------------------------

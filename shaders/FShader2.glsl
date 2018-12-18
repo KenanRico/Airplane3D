@@ -40,9 +40,9 @@ uniform int pl_count;
 uniform vec3 view_pos;
 uniform vec3 material;
 uniform sampler2D shadow_map;
-uniform bool previewer_correct_gamma;
-uniform bool previewer_blinn_phong;
-uniform bool previewer_lighting;
+uniform bool correct_gamma;
+uniform bool blinn_phong;
+uniform bool lighting;
 
 
 //-----------output vars----------
@@ -63,7 +63,7 @@ vec3 pointLight(PointLight, Material);
 void main(){
 	//assign final color to fragment
 	vec3 final = vec3(0.0f, 0.0f, 0.0f);
-	if(previewer_lighting){
+	if(lighting){
 		Material mat = {
 			material,
 			0.8f
@@ -75,7 +75,7 @@ void main(){
 	}else{
 		final = material;
 	}
-	if(previewer_correct_gamma){
+	if(correct_gamma){
 		FragColor = vec4(pow(final, vec3(1.0/gamma)), 1.0);
 	}else{
 		FragColor = vec4(final, 1.0);
@@ -115,7 +115,7 @@ vec3 directionalLight(DirectionalLight light, Material material){
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	vec3 halfway = normalize(viewDir+lightDir);
-	float angle = previewer_blinn_phong ? dot(norm, halfway) : dot(viewDir, reflectDir);
+	float angle = blinn_phong ? dot(norm, halfway) : dot(viewDir, reflectDir);
 	float specularStrength = pow(max(angle, 0.0f), 64.0f);
 	vec3 specular = specularStrength * light.specular * material.color;
 
@@ -141,13 +141,13 @@ vec3 pointLight(PointLight light, Material material){
 	vec3 viewDir = normalize(view_pos-fragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	vec3 halfway = normalize(lightDir+viewDir);
-	float angle = previewer_blinn_phong ? dot(norm, halfway) : dot(viewDir, reflectDir);
+	float angle = blinn_phong ? dot(norm, halfway) : dot(viewDir, reflectDir);
 	float specularStrength = pow(max(angle, 0.0f), 64.0f);
 	vec3 specular = specularStrength * light.specular * material.color;
 
 	float distance = length(light.position - fragPos);
 	float attenuation = 
-		1.0f / (light.attenuation.x + light.attenuation.y*distance + light.attenuation.z * (previewer_correct_gamma ? (distance*distance) : distance));
+		1.0f / (light.attenuation.x + light.attenuation.y*distance + light.attenuation.z * (correct_gamma ? (distance*distance) : distance));
 
 	vec3 finalLight = (ambient + diffuse + specular) * attenuation * light.intensity; 
 

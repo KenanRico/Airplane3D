@@ -107,6 +107,7 @@ void Pipeline::Renderer::renderEntities(
 
 
 /*---------------------------------------Environment Update--------------------------------------------*/
+
 void Pipeline::EnvironmentUpdater::handleLighting(std::vector<Lighting*>* lightings){
 	for(std::vector<Lighting*>::iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 		(*lyt)->update();

@@ -7,6 +7,7 @@
 
 #include <vector>
 
+#define _HDR 0
 
 
 
@@ -14,7 +15,7 @@ GraphicsSystem::GraphicsSystem():
 system_lighting((SystemLighting){LightingState::ON}),
 blinn_phong((BlinnPhong){BlinnPhongState::ON}),
 gamma((Gamma){GammaCorrectionState::OFF}),
-hdr((HDR){HDRState::OFF, (unsigned int)-1, (unsigned int)-1}){
+hdr((struct HDR){HDRState::OFF, (unsigned int)(-1), (unsigned int)(-1), (unsigned int)(-1)}){
 
 }
 
@@ -27,13 +28,17 @@ void GraphicsSystem::setClientShaders(const std::vector<unsigned int>& shaders){
 	client_shader_pool = shaders;
 }
 
-void GraphicsSystem::initHDR(){
+void GraphicsSystem::init(const std::vector<Object*>& objs, unsigned int shader){
+#if _HDR==1
+	objects = &objs;
 	glGenFramebuffers(1, &hdr.FBO);
 	glGenTextures(1, &hdr.color_buffer);
 	glBindTexture(GL_TEXTURE_2D, hdr.color_buffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, GameSystem::windowW(), GameSystem::windowH(), 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	hdr.shader = shader;
+#endif
 }
 
 void GraphicsSystem::update(){
@@ -75,25 +80,43 @@ void GraphicsSystem::update(){
 }
 
 void GraphicsSystem::commit() const{
-	for(std::vector<unsigned int>::const_iterator si=client_shader_pool.begin(); si!=client_shader_pool.end(); ++si){
 
+	bool l = system_lighting.state==LightingState::ON;
+	bool gc = gamma.state==GammaCorrectionState::CUSTOM;
+	gamma.state==GammaCorrectionState::DEFAULT ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
+	bool bp = blinn_phong.state==BlinnPhongState::ON;
+#if _HDR==1
+	bool h = hdr.state==HDRState::ON;
+	if(h){
+		glBindFramebuffer(GL_FRAMEBUFFER, hdr.FBO);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//render to hdr shader to get color buffer
+		for(std::vector<Object*>::const_iterator obj=objects->begin(); obj!=objects->end(); ++obj){
+			const Object& object = **obj;
+			Shader::useShader(hdr.shader);
+			glBindVertexArray(object.ri.VAO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);
+			glDrawElements(object.ri.mode, object.ri.indices_count, GL_UNSIGNED_INT, 0);
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+#endif
+
+	for(std::vector<unsigned int>::const_iterator si=client_shader_pool.begin(); si!=client_shader_pool.end(); ++si){
 		unsigned int s = *si;
 		Shader::useShader(s);
-
-		//lighting
-		glUniform1i(glGetUniformLocation(s, "lighting"), (system_lighting.state==LightingState::ON));
-		//gamma correction
-		glUniform1i(glGetUniformLocation(s, "correct_gamma"), (gamma.state==GammaCorrectionState::CUSTOM));
-		if(gamma.state==GammaCorrectionState::DEFAULT){
-			glEnable(GL_FRAMEBUFFER_SRGB);
-		}else{
-			glDisable(GL_FRAMEBUFFER_SRGB);
-		}
-		//blinn phong
-		glUniform1i(glGetUniformLocation(s, "blinn_phong"), (blinn_phong.state==BlinnPhongState::ON));
+		//lighting, gamma, blinn
+		glUniform1i(glGetUniformLocation(s, "lighting"), l);
+		glUniform1i(glGetUniformLocation(s, "correct_gamma"), gc);
+		glUniform1i(glGetUniformLocation(s, "blinn_phong"), bp);
+#if _HDR==1
 		//HDR
-
+		if(h){
+			//send color buffer to rendering shader
+		}
+#endif
 	}
+
 }
 
 unsigned int GraphicsSystem::getHdrColorBuffer() const{

@@ -2,6 +2,8 @@
 #define GRAPHICS_SYSTEM_H
 //---------------------------------------------------------------
 
+#include "object.h"
+
 #include <vector>
 
 class GraphicsSystem{
@@ -24,10 +26,12 @@ class GraphicsSystem{
 			HDRState state;
 			unsigned int FBO;
 			unsigned int color_buffer;
+			unsigned int shader;
 		};
 
 	private:
 		std::vector<unsigned int> client_shader_pool;
+		std::vector<Object*> const * objects;
 		SystemLighting system_lighting;
 		BlinnPhong blinn_phong;
 		Gamma gamma;
@@ -42,7 +46,7 @@ class GraphicsSystem{
 
 	public:
 		void setClientShaders(const std::vector<unsigned int>&);
-		void initHDR();
+		void init(const std::vector<Object*>&, unsigned int);
 		void update();
 		void commit() const;
 		unsigned int getHdrColorBuffer() const;

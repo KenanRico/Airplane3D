@@ -52,7 +52,7 @@ void Game::init(){
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
-	graphics.initHDR();
+	//graphics.init(object_pool, shader_pool.find("hdr shader")->second);
 	graphics.setClientShaders(std::vector<unsigned int>{shader_pool.find("basic shader 2")->second});
 }
 

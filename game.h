@@ -9,6 +9,7 @@
 #include "lighting.h"
 #include "shadow.h"
 #include "graphicssystem.h"
+#include "skybox.h"
 
 #include <string>
 #include <vector>
@@ -24,6 +25,7 @@ class Game{
 		static Vehicle* vehicle;
 		static std::vector<Lighting*> lightings;
 		static std::vector<Shadow*> shadows;
+		static Skybox skybox;
 
 	private:
 		Game() = delete;

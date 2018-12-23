@@ -30,7 +30,7 @@ velocity((struct Velocity){mag, max, min}),
 controller((struct Control){mra, ps, rs}),
 cameras(
 	(struct Cameras){
-		{Camera(40.0f, 250.0f, p, orientation.front), Camera(60.0f, 350.0f, p, orientation.front), Camera(60.0f, 250.0f, p, -orientation.front)},
+		{Camera(80.0f, 550.0f, p, orientation.front), Camera(80.0f, 550.0f, p, orientation.front), Camera(80.0f, 550.0f, p, -orientation.front)},
 		&cameras.views[FP]
 	}
 ){
@@ -48,7 +48,7 @@ void Vehicle::updateProperties(){
 	syncProperties();
 	geometry.position.current += velocity.magnitude * orientation.front;
 	float& speed = velocity.magnitude;
-	speed -= 0.003f;
+	speed -= 0.00005f;
 	const float& max = velocity.max;
 	const float& min = velocity.min;
 	if(speed>max){
@@ -74,6 +74,9 @@ void Vehicle::updateProperties(){
 	r->coord.up = orientation.up;
 	r->coord.right = -orientation.right;
 	r->lens_pos = r->position + r->coord.front;
+	fp->property.FOV_stretch = (1.0-0.1*(speed/max));
+	tp->property.FOV_stretch = (1.0-0.15*(speed/max));
+	r->property.FOV_stretch = (1.0+0.1*(speed/max));
 }
 
 const Camera& Vehicle::viewingCamera() const{
@@ -132,11 +135,7 @@ void Vehicle::control(std::vector<Object*>* objects){
 	}
 	float& speed = velocity.magnitude;
 	if(EventHandler::keyDown(EventHandler::SPACE)){
-		if(EventHandler::keyDown(EventHandler::LCTRL)){
-			speed -= 0.4f;
-		}else{
-			speed += 0.004f;
-		}
+		speed += 0.0001f;
 	}
 	if(EventHandler::keyClicked(EventHandler::C)){
 		cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];

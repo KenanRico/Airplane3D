@@ -10,6 +10,7 @@
 
 class Object;
 class Vehicle;
+class Skybox;
 
 namespace Pipeline{
 
@@ -24,12 +25,14 @@ namespace Pipeline{
 	};
 
 	namespace Renderer{
+		void renderEnvironment(const Skybox&);
 		void renderEntities(std::vector<Object*> const *, Vehicle const *, std::vector<Lighting*> const *, const std::vector<Shadow*>&, const Camera&);
 	};
 
 	namespace EnvironmentUpdater{
 		void handleLighting(std::vector<Lighting*>*);
 		void updateShadow(std::vector<Shadow*>*, const std::vector<Object*>&, unsigned int);
+		void updateSkybox(Skybox*, const Camera&);
 	};
 
 };

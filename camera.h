@@ -9,6 +9,7 @@ class Camera{
 	protected:
 		struct CameraProperty{
 			float FOV;
+			float FOV_stretch;
 			float render_distance;
 		};
 		struct CoordinateSystem{

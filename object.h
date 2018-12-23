@@ -6,13 +6,15 @@
 #include "camera.h"
 #include "gpubuffer.h"
 #include "pipeline.h"
-#include "lighting.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
 class Vehicle;
+class Lighting;
+class Shadow;
+
 class Object{
 	protected:
 		struct RenderInfo{

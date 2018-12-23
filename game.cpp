@@ -15,6 +15,7 @@
 #include "lighting.h"
 #include "shadow.h"
 #include "graphicssystem.h"
+#include "skybox.h"
 
 #include <vector>
 #include <map>
@@ -34,6 +35,7 @@ std::vector<Object*> Game::controllables;
 Vehicle* Game::vehicle = nullptr;
 std::vector<Lighting*> Game::lightings;
 std::vector<Shadow*> Game::shadows;
+Skybox Game::skybox;
 
 
 void Game::init(){
@@ -48,12 +50,13 @@ void Game::init(){
 		gpu_buffers.find("rectangle frame")->second,
 		shader_pool.find("basic shader 2")->second,
 		glm::vec3(-4.0, 2.0f, 3.0f), 4.0f, glm::vec3(1.0, 0.0, 0.0),
-		0.0f, 0.3f, 0.0f, 50.0f, 0.01f, 0.01f
+		0.0f, 0.1f, 0.0f, 50.0f, 0.01f, 0.01f
 	);
 	entity_pool.push_back(vehicle);
 	controllables.push_back(vehicle);
 	//graphics.init(object_pool, shader_pool.find("hdr shader")->second);
 	graphics.setClientShaders(std::vector<unsigned int>{shader_pool.find("basic shader 2")->second});
+	skybox.initialize(gpu_buffers["skybox"], shader_pool["skybox"]);
 }
 
 void Game::runPipeline(){
@@ -67,6 +70,8 @@ void Game::runPipeline(){
 	Pipeline::EnvironmentUpdater::handleLighting(&lightings);
 	/*-------------Update Shadow Mapping----------------*/
 	Pipeline::EnvironmentUpdater::updateShadow(&shadows, entity_pool, shader_pool["shadow shader"]);
+	/*-------------Update Skybox----------------*/
+	Pipeline::EnvironmentUpdater::updateSkybox(&skybox, vehicle->viewingCamera());
 	/*---------------Check whether object should still exist--------------------*/
 	for(std::vector<Object*>::iterator o=entity_pool.begin(); o!=entity_pool.end(); ++o){
 		if(!(*o)->isAlive()){
@@ -80,6 +85,7 @@ void Game::runPipeline(){
 
 void Game::render(){
 	graphics.commit();
+	Pipeline::Renderer::renderEnvironment(skybox);
 	Pipeline::Renderer::renderEntities(&entity_pool, vehicle, &lightings, shadows, vehicle->viewingCamera());
 }
 

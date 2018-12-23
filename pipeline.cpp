@@ -7,6 +7,7 @@
 #include "vehicle.h"
 #include "lighting.h"
 #include "pointlight.h"
+#include "skybox.h"
 
 #include <vector>
 
@@ -62,8 +63,28 @@ void Pipeline::Transformer::transformAll(std::vector<Object*>* entities_ptr, con
 
 
 
-
 /*-------------------------------------Render Function-------------------------------------------*/
+
+void Pipeline::Renderer::renderEnvironment(const Skybox& skybox){
+	unsigned int shader = skybox.shader;
+	Shader::useShader(shader);
+	//pass sky transformation
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(skybox.transformation.model.overall));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(skybox.transformation.view));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(skybox.transformation.projection));
+	//pass sky texture
+	glUniform1i(glGetUniformLocation(shader, "skybox"), GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, skybox.texture_ID);
+	//render skybox
+	//glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+	glBindVertexArray(skybox.ri.VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skybox.ri.EBO);
+	glDrawElements(skybox.ri.mode, skybox.ri.indices_count, GL_UNSIGNED_INT, 0);
+	//glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
+}
 
 void Pipeline::Renderer::renderEntities(
 	std::vector<Object*> const * entities,
@@ -94,7 +115,7 @@ void Pipeline::Renderer::renderEntities(
 		for(std::vector<Shadow*>::const_iterator shadow=shadows.begin(); shadow!=shadows.end(); ++shadow){
 			glUniformMatrix4fv(glGetUniformLocation(current_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr((*shadow)->getLSM()));
 			unsigned int shadow_map = (*shadow)->getDepthMapTexture();
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE0+(shadow-shadows.begin()));
 			glBindTexture(GL_TEXTURE_2D, shadow_map);
 		}
 		//render
@@ -135,4 +156,8 @@ void Pipeline::EnvironmentUpdater::updateShadow(std::vector<Shadow*>* shadows, c
 		}
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Pipeline::EnvironmentUpdater::updateSkybox(Skybox* skybox, const Camera& camera){
+	skybox->computeTransformations(camera);
 }

@@ -36,7 +36,9 @@ Shadow::Shadow(Lighting const * src): depth_map_FBO(-1), depth_map(-1), source(s
 }
 
 Shadow::~Shadow(){
-
+	if(depth_map!=(unsigned int)-1){
+		glDeleteTextures(1, &depth_map);
+	}
 }
 
 void Shadow::updateLightSpaceMat(){

@@ -12,7 +12,7 @@
 
 
 Camera::Camera(float fo, float d, const glm::vec3& p, const glm::vec3& f):
-property((struct CameraProperty){fo, d}),
+property((struct CameraProperty){fo, 1.0f, d}),
 coord((struct CoordinateSystem){glm::normalize(f), glm::normalize(glm::cross(f,glm::vec3(0.0f,1.0f,0.0f))), glm::cross(coord.front, coord.up)}),
 position(p),
 lens_pos(p+coord.front){
@@ -67,7 +67,7 @@ const glm::vec3& Camera::straightUp() const{
 }
 
 float Camera::fov() const{
-	return property.FOV;
+	return property.FOV*property.FOV_stretch;
 }
 
 float Camera::renderDistance() const{

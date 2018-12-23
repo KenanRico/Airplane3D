@@ -2,10 +2,11 @@
 
 #include "gpubuffer.h"
 
-
+//vertices, normals, textures
 GPUbuffer::GPUbuffer(
 	float const * vertices, unsigned int v_size, unsigned int v_dimension,
 	float const * normals, unsigned int n_size, unsigned int n_dimension,
+	float const * texcoords, unsigned int t_size, unsigned int t_dimension,
 	unsigned int const * indices, unsigned int i_size, unsigned int i_count,
 	GLenum m
 ): indices_count(i_count), mode(m){
@@ -13,26 +14,40 @@ GPUbuffer::GPUbuffer(
 	glGenBuffers(1, &(VBO.vID));
 	glBindBuffer(GL_ARRAY_BUFFER, VBO.vID);
 	glBufferData(GL_ARRAY_BUFFER, v_size, vertices, GL_STATIC_DRAW);
-	glGenBuffers(1, &(VBO.nID));
-	glBindBuffer(GL_ARRAY_BUFFER, VBO.nID);
-	glBufferData(GL_ARRAY_BUFFER, n_size, normals, GL_STATIC_DRAW);
+	if(normals!=nullptr){
+		glGenBuffers(1, &(VBO.nID));
+		glBindBuffer(GL_ARRAY_BUFFER, VBO.nID);
+		glBufferData(GL_ARRAY_BUFFER, n_size, normals, GL_STATIC_DRAW);
+	}
+	if(texcoords!=nullptr){
+		glGenBuffers(1, &(VBO.tID));
+		glBindBuffer(GL_ARRAY_BUFFER, VBO.tID);
+		glBufferData(GL_ARRAY_BUFFER, t_size, texcoords, GL_STATIC_DRAW);
+	}
 	//generate VAO and bind to it to create attrib pointers(vertex array object)
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	//bind VBO and VAO
 	//set vertex att pointers
 	glBindBuffer(GL_ARRAY_BUFFER, VBO.vID);
 	glVertexAttribPointer(0, v_dimension, GL_FLOAT, GL_FALSE, v_dimension*sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO.nID);
-	glVertexAttribPointer(1, n_dimension, GL_FLOAT, GL_FALSE, n_dimension*sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
+	if(normals!=nullptr){
+		glBindBuffer(GL_ARRAY_BUFFER, VBO.nID);
+		glVertexAttribPointer(1, n_dimension, GL_FLOAT, GL_FALSE, n_dimension*sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+	}
+	if(texcoords!=nullptr){
+		glBindBuffer(GL_ARRAY_BUFFER, VBO.tID);
+		glVertexAttribPointer(2, t_dimension, GL_FLOAT, GL_FALSE, t_dimension*sizeof(float), (void*)0);
+		glEnableVertexAttribArray(2);
+	}
 	//generate EBO (element buffer object), assign ID, and copy element data into EBO
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, i_size, indices, GL_STATIC_DRAW);
 }
 
+//vertices only
 GPUbuffer::GPUbuffer(
 	float const * vertices, unsigned int v_size, unsigned int v_dimension,
 	unsigned int const * indices, unsigned int i_size, unsigned int i_count,
@@ -45,7 +60,6 @@ GPUbuffer::GPUbuffer(
 	//generate VAO and bind to it to create attrib pointers(vertex array object)
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	//bind VBO and VAO
 	//set vertex att pointers
 	glBindBuffer(GL_ARRAY_BUFFER, VBO.vID);
 	glVertexAttribPointer(0, v_dimension, GL_FLOAT, GL_FALSE, v_dimension*sizeof(float), (void*)0);

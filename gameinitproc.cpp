@@ -114,7 +114,7 @@ void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffe
 	//unsigned int i0[] = {0,1,2,1,2,3,0,2,6,0,4,6,4,6,7,4,7,5,5,1,7,1,7,3,0,1,4,1,4,5,2,6,3,6,3,7};
 	GLenum m0 = GL_TRIANGLES;
 	gpu_buffers->insert(
-		std::make_pair("rectangle frame", new GPUbuffer(v0, sizeof(v0), 3, n0, sizeof(n0), 3, i0, sizeof(i0), sizeof(i0)/sizeof(unsigned int), m0))
+		std::make_pair("rectangle frame", new GPUbuffer(v0, sizeof(v0), 3, n0, sizeof(n0), 3, nullptr, 0, 0, i0, sizeof(i0), sizeof(i0)/sizeof(unsigned int), m0))
 	);
 	//piramid frame
 	float v1[] = {
@@ -142,6 +142,57 @@ void GameInitProc::createGPUBuffers(std::map<std::string, GPUbuffer*>* gpu_buffe
 	gpu_buffers->insert(
 		std::make_pair("marker", new GPUbuffer(v2, sizeof(v2), 3, i2, sizeof(i2), sizeof(i2)/sizeof(unsigned int), m2))
 	);
+	//skybox
+	float v3[] = {
+		-1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
+	};
+	unsigned int i3[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35};
+	GLenum m3 = GL_TRIANGLES;
+	gpu_buffers->insert(
+		std::make_pair("skybox", new GPUbuffer(v3, sizeof(v3), 3, i3, sizeof(i3), sizeof(i3)/sizeof(unsigned int), m3))
+	);
+
+
 	Logger::toConsole(Logger::L_INFO, "Buffer objects initialized");
 }
 
@@ -151,6 +202,8 @@ void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_poo
 	shader_pool->insert(std::make_pair("basic shader", Shader::initShaders("shaders/VShader.glsl", "shaders/FShader.glsl")));
 	shader_pool->insert(std::make_pair("basic shader 2", Shader::initShaders("shaders/VShader2.glsl", "shaders/FShader2.glsl")));
 	shader_pool->insert(std::make_pair("shadow shader", Shader::initShaders("shaders/Vshadow.glsl", "shaders/Fshadow.glsl")));
+	shader_pool->insert(std::make_pair("skybox", Shader::initShaders("shaders/Vskybox.glsl", "shaders/Fskybox.glsl")));
+
 	Logger::toConsole(Logger::L_INFO, "Shaders initialized");
 }
 

@@ -10,6 +10,7 @@ class GPUbuffer{
 		typedef struct _VBOs{
 			unsigned int vID;
 			unsigned int nID;
+			unsigned int tID;
 		} VBOs;
 	private:
 		VBOs VBO;
@@ -19,7 +20,14 @@ class GPUbuffer{
 		GLenum mode;
 
 	public:
-		GPUbuffer(float const *, unsigned int, unsigned int, float const *, unsigned int, unsigned int, unsigned int const *, unsigned int, unsigned int, GLenum);
+		//v, n, t, i
+		GPUbuffer(
+			float const *, unsigned int, unsigned int,
+			float const *, unsigned int, unsigned int,
+			float const *, unsigned int, unsigned int,
+			unsigned int const *, unsigned int, unsigned int,
+			GLenum);
+		//v, i
 		GPUbuffer(float const *, unsigned int, unsigned int, unsigned int const *, unsigned int, unsigned int, GLenum);
 		~GPUbuffer();
 	private:

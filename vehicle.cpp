@@ -122,16 +122,16 @@ void Vehicle::computeTransformations(const Camera& camera){
 void Vehicle::control(std::vector<Object*>* objects){
 	/*-------handle input, update object-------*/
 	if(EventHandler::keyDown(EventHandler::W)){
-		rotate(orientation.front, orientation.up, orientation.right, -0.3f);
+		rotate(orientation.front, orientation.up, orientation.right, -0.1f);
 	}
 	if(EventHandler::keyDown(EventHandler::A)){
-		rotate(orientation.right, orientation.up, orientation.front, 0.3f);
+		rotate(orientation.right, orientation.up, orientation.front, 0.1f);
 	}
 	if(EventHandler::keyDown(EventHandler::S)){
-		rotate(orientation.front, orientation.up, orientation.right, 0.3f);
+		rotate(orientation.front, orientation.up, orientation.right, 0.1f);
 	}
 	if(EventHandler::keyDown(EventHandler::D)){
-		rotate(orientation.right, orientation.up, orientation.front, -0.3f);
+		rotate(orientation.right, orientation.up, orientation.front, -0.1f);
 	}
 	float& speed = velocity.magnitude;
 	if(EventHandler::keyDown(EventHandler::SPACE)){

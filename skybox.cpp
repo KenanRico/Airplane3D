@@ -4,6 +4,7 @@
 #include "gpubuffer.h"
 #include "camera.h"
 #include "gamesystem.h"
+#include "logger.h"
 
 #include <cstring>
 #include <string>
@@ -44,8 +45,9 @@ void Skybox::initialize(GPUbuffer const * gb, unsigned int s){
 		if(data!=nullptr){
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, GL_SRGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			stbi_image_free(data);
+			Logger::toConsole(Logger::L_INFO, std::string("Loaded skybox texture data for " + faces[i]));
 		}else{
-
+			Logger::toConsole(Logger::L_ERROR, std::string("Failed to load skybox texture data for " + faces[i]));
 		}
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

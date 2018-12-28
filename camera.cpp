@@ -3,7 +3,6 @@
 #include "logger.h"
 
 #include <math.h>
-#include <iostream>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>

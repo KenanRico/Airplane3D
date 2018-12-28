@@ -4,6 +4,7 @@
 #include "gamesystem.h"
 #include "eventhandler.h"
 #include "shader.h"
+#include "logger.h"
 
 #include <vector>
 
@@ -44,36 +45,45 @@ void GraphicsSystem::init(const std::vector<Object*>& objs, unsigned int shader)
 void GraphicsSystem::update(){
 	//lighting
 	if(EventHandler::keyDown(EventHandler::L)){
-		if(EventHandler::keyDown(EventHandler::ONE)){
+		if(EventHandler::keyDown(EventHandler::ONE) && system_lighting.state!=LightingState::OFF){
 			system_lighting.state = LightingState::OFF;
-		}else if(EventHandler::keyDown(EventHandler::TWO)){
+			Logger::toConsole(Logger::L_INFO, "Lighting off");
+		}else if(EventHandler::keyDown(EventHandler::TWO) && system_lighting.state!=LightingState::ON){
 			system_lighting.state = LightingState::ON;
+			Logger::toConsole(Logger::L_INFO, "Lighting on");
 		}
 	}
 	//gamma
 	if(EventHandler::keyDown(EventHandler::G)){
-		if(EventHandler::keyDown(EventHandler::ONE)){
+		if(EventHandler::keyDown(EventHandler::ONE) && gamma.state!=GammaCorrectionState::OFF){
 			gamma.state = GammaCorrectionState::OFF;
-		}else if(EventHandler::keyDown(EventHandler::TWO)){
+			Logger::toConsole(Logger::L_INFO, "Gamma correction off");
+		}else if(EventHandler::keyDown(EventHandler::TWO) && gamma.state!=GammaCorrectionState::DEFAULT){
 			gamma.state = GammaCorrectionState::DEFAULT;
-		}else if(EventHandler::keyDown(EventHandler::THREE)){
+			Logger::toConsole(Logger::L_INFO, "Gamma correction: default GL gamma correction");
+		}else if(EventHandler::keyDown(EventHandler::THREE) && gamma.state!=GammaCorrectionState::CUSTOM){
 			gamma.state = GammaCorrectionState::CUSTOM;
+			Logger::toConsole(Logger::L_INFO, "Gamma correction: custom gamma correction");
 		}
 	}
 	//blinn phong
 	if(EventHandler::keyDown(EventHandler::P)){
-		if(EventHandler::keyDown(EventHandler::ONE)){
+		if(EventHandler::keyDown(EventHandler::ONE) && blinn_phong.state!=BlinnPhongState::OFF){
 			blinn_phong.state = BlinnPhongState::OFF;
-		}else if(EventHandler::keyDown(EventHandler::TWO)){
+			Logger::toConsole(Logger::L_INFO, "Specular: phong");
+		}else if(EventHandler::keyDown(EventHandler::TWO) && blinn_phong.state!=BlinnPhongState::ON){
 			blinn_phong.state = BlinnPhongState::ON;
+			Logger::toConsole(Logger::L_INFO, "Specular: blinn phong");
 		}
 	}
 	//HDR
 	if(EventHandler::keyDown(EventHandler::H)){
-		if(EventHandler::keyDown(EventHandler::ONE)){
+		if(EventHandler::keyDown(EventHandler::ONE) && hdr.state!=HDRState::OFF){
 			hdr.state = HDRState::OFF;
-		}else if(EventHandler::keyDown(EventHandler::TWO)){
+			Logger::toConsole(Logger::L_INFO, "HDR off");
+		}else if(EventHandler::keyDown(EventHandler::TWO) && hdr.state!=HDRState::ON){
 			hdr.state = HDRState::ON;
+			Logger::toConsole(Logger::L_INFO, "HDR on");
 		}
 	}
 

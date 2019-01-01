@@ -12,7 +12,6 @@
 
 class Bullet: public Object{
 	private:
-		static GPUbuffer* bullet_shape;
 		static std::string v_shader;
 		static std::string f_shader;
 		static unsigned shd;
@@ -29,11 +28,8 @@ class Bullet: public Object{
 		Bullet& operator=(const Bullet&) = delete;
 
 	public:
-		static void define(GPUbuffer*, unsigned int);
 		void updateProperties() override;
 		void computeTransformations(const Camera&) override;
-
-	friend class Weapon;
 };
 
 //---------------------------------------------------------------------

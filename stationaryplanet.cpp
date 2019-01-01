@@ -4,7 +4,6 @@
 #include "shader.h"
 #include "camera.h"
 #include "gamesystem.h"
-#include "gpubuffer.h"
 #include "logger.h"
 
 #include <math.h>
@@ -17,8 +16,9 @@
 
 float StationaryPlanet::scale = 10.0f;
 
-StationaryPlanet::StationaryPlanet(GPUbuffer const * buffers, unsigned int s, const glm::vec3& p, float si, float rs, const glm::vec3& ro):
-Object(buffers, s, p, si*scale), rotation_speed(rs){
+class Model;
+StationaryPlanet::StationaryPlanet(Model const * model, unsigned int s, const glm::vec3& p, float si, float rs, const glm::vec3& ro):
+Object(model, s, p, si*scale), rotation_speed(rs){
 	geometry.rotation.orientation = ro;
 }
 

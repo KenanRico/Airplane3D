@@ -19,6 +19,7 @@ class Game{
 	protected:
 		static GraphicsSystem graphics;
 		static std::map<std::string, GPUbuffer*> gpu_buffers;
+		static std::map<std::string, Model> model_pool;
 		static std::map<std::string, unsigned int> shader_pool;
 		static std::vector<Object*> entity_pool;
 		static std::vector<Object*> controllables;

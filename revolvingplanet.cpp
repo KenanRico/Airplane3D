@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 
 #include "revolvingplanet.h"
-#include "gpubuffer.h"
 #include "object.h"
 #include "gamesystem.h"
 #include "camera.h"
@@ -13,9 +12,9 @@
 
 float RevolvingPlanet::scale = 15.0f;
 
-
-RevolvingPlanet::RevolvingPlanet(GPUbuffer const * buffers, unsigned int s, const glm::vec3& p, float si, float rs, const glm::vec3& ro, const glm::vec3& mat):
-Object(buffers, s, p, si*scale), revolution((struct Revolution){rs, ro}), material(mat){
+class Model;
+RevolvingPlanet::RevolvingPlanet(Model const * model, unsigned int s, const glm::vec3& p, float si, float rs, const glm::vec3& ro, const glm::vec3& mat):
+Object(model, s, p, si*scale), revolution((struct Revolution){rs, ro}), material(mat){
 	//nothing
 }
 

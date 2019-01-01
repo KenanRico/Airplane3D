@@ -12,6 +12,7 @@
 #include <glm/glm.hpp>
 
 
+class Model;
 class Vehicle : public Object{
 	private:
 		enum CameraID {FP=0, TP=1, rear=2};
@@ -42,7 +43,7 @@ class Vehicle : public Object{
 		struct Cameras cameras;
 
 	public:
-		Vehicle(GPUbuffer const *, unsigned int, const glm::vec3&, float, const glm::vec3&, float, float, float, float, float, float);
+		Vehicle(Model const *, unsigned int, const glm::vec3&, float, const glm::vec3&, float, float, float, float, float, float);
 		~Vehicle();
 	private:
 		Vehicle() = delete;

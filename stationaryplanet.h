@@ -4,11 +4,11 @@
 
 #include "object.h"
 #include "camera.h"
-#include "gpubuffer.h"
 
 #include <glm/glm.hpp>
 
 
+class Model;
 class StationaryPlanet : public Object{
 	private:
 		static float scale;
@@ -23,7 +23,7 @@ class StationaryPlanet : public Object{
 		*/
 
 	public:
-		StationaryPlanet(GPUbuffer const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&);
+		StationaryPlanet(Model const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&);
 		virtual ~StationaryPlanet();
 	private:
 		StationaryPlanet() = delete;

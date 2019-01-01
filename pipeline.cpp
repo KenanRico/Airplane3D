@@ -98,30 +98,34 @@ void Pipeline::Renderer::renderEntities(
 
 		if(*obj==(Object*)vehicle && &camera!=&(vehicle->tpCamera())) continue;
 
-		const Object& object = *(*obj);
 		//send object data to shader
-		unsigned int current_shader = object.shader;
+		unsigned int current_shader = (*obj)->shader;
 		Shader::useShader(current_shader);
-		object.sendInfoToShader(current_shader);
+		(*obj)->sendInfoToShader(current_shader);
 		const glm::vec3& camera_pos = camera.pos();
 		glUniform3f(glGetUniformLocation(current_shader, "view_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
-		glUniform1i(glGetUniformLocation(current_shader, "shadow_map"), GL_TEXTURE0);
 		//send lighting data to shader
 		for(std::vector<Lighting*>::const_iterator lyt=lightings->begin(); lyt!=lightings->end(); ++lyt){
 			(*lyt)->sendInfoToShader(current_shader);
 		}
 		PointLight::sendResetIndex(current_shader);
 		//send shadow data to shader
+		glUniform1i(glGetUniformLocation(current_shader, "shadow_map"), GL_TEXTURE0);
 		for(std::vector<Shadow*>::const_iterator shadow=shadows.begin(); shadow!=shadows.end(); ++shadow){
 			glUniformMatrix4fv(glGetUniformLocation(current_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr((*shadow)->getLSM()));
 			unsigned int shadow_map = (*shadow)->getDepthMapTexture();
 			glActiveTexture(GL_TEXTURE0+(shadow-shadows.begin()));
 			glBindTexture(GL_TEXTURE_2D, shadow_map);
 		}
-		//render
-		glBindVertexArray(object.ri.VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);
-		glDrawElements(object.ri.mode, object.ri.indices_count, GL_UNSIGNED_INT, 0);
+
+		const std::vector<Mesh>& meshes = (**obj).getModel().getMeshes();
+		for(std::vector<Mesh>::const_iterator m=meshes.begin(); m!=meshes.end(); ++m){
+			//render
+			const struct Mesh::RenderInfo& ri = m->getRI();
+			glBindVertexArray(ri.VAO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ri.EBO);
+			glDrawElements(ri.mode, ri.indices_count, GL_UNSIGNED_INT, 0);
+		}
 	}
 }
 
@@ -139,20 +143,23 @@ void Pipeline::EnvironmentUpdater::updateShadow(std::vector<Shadow*>* shadows, c
 	glViewport(0, 0, Shadow::shadow_width, Shadow::shadow_height);
 	Shader::useShader(shadow_shader);
 	for(std::vector<Shadow*>::iterator shad=shadows->begin(); shad!=shadows->end(); ++shad){
-		//update light space matrix
+		//update light space matrix and pass to shader
 		Shadow& shadow = *(*shad);
 		shadow.updateLightSpaceMat();
+		glUniformMatrix4fv(glGetUniformLocation(shadow_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr(shadow.getLSM()));
 		//gen depth map
 		glBindFramebuffer(GL_FRAMEBUFFER, shadow.getDepthMapFBO());
 		glClear(GL_DEPTH_BUFFER_BIT);
+		//render scene as if it's a regular render
 		for(std::vector<Object*>::const_iterator obj=objects.begin(); obj!=objects.end(); ++obj){
-			const Object& object = *(*obj);
-			glUniformMatrix4fv(glGetUniformLocation(shadow_shader, "model"), 1, GL_FALSE, glm::value_ptr(object.transformation.model.overall));
-			glUniformMatrix4fv(glGetUniformLocation(shadow_shader, "light_space_matrix"), 1, GL_FALSE, glm::value_ptr(shadow.getLSM()));
-			//render scene as if it's a regular render
-			glBindVertexArray(object.ri.VAO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.ri.EBO);
-			glDrawElements(object.ri.mode, object.ri.indices_count, GL_UNSIGNED_INT, 0);
+			glUniformMatrix4fv(glGetUniformLocation(shadow_shader, "model"), 1, GL_FALSE, glm::value_ptr((*obj)->transformation.model.overall));
+			const std::vector<Mesh>& meshes = (**obj).getModel().getMeshes();
+			for(std::vector<Mesh>::const_iterator m=meshes.begin(); m!=meshes.end(); ++m){
+				const struct Mesh::RenderInfo& ri = m->getRI();
+				glBindVertexArray(ri.VAO);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ri.EBO);
+				glDrawElements(ri.mode, ri.indices_count, GL_UNSIGNED_INT, 0);
+			}
 		}
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

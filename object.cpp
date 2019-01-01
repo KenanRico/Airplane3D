@@ -3,6 +3,7 @@
 #include "object.h"
 #include "shader.h"
 #include "gamesystem.h"
+#include "model.h"
 
 #include <vector>
 
@@ -12,18 +13,15 @@
 
 
 
-#define VERTEX_SIZE 3
-
 Object::Object(
-	GPUbuffer const * buffers,
+	Model const * m,
 	unsigned int s,
 	const glm::vec3& p,
 	float si
 ):
-ri((struct RenderInfo){0,0,0}),
+model(m),
 shader(s),
 exists(true){
-	buffers->queryRenderInfo(&ri.VAO, &ri.EBO, &ri.indices_count, &ri.mode);
 	geometry.position.last = glm::vec3(0.0f,0.0f,0.0f);
 	geometry.position.current = p;
 	geometry.size.last = glm::vec3(1.0f,1.0f,1.0f);
@@ -81,3 +79,6 @@ bool Object::isAlive() const{
 	return exists;
 }
 
+const Model& Object::getModel() const{
+	return *model;
+}

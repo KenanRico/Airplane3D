@@ -207,8 +207,16 @@ void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_poo
 	Logger::toConsole(Logger::L_INFO, "Shaders initialized");
 }
 
+void GameInitProc::generateModels(std::map<std::string, Model>* model_pool, const std::map<std::string, GPUbuffer*>& buffer_pool){
+	//model_pool->insert(std::make_pair("planet1", Model("models/planet1.obj")));
+	//model_pool->insert(std::make_pair("planet2", Model("models/planet2.obj")));
+	//model_pool->insert(std::make_pair("ship", Model("models/ship.obj")));
+	model_pool->insert(std::make_pair("planet1", Model(buffer_pool.at("rectangle frame"))));
+	model_pool->insert(std::make_pair("planet2", Model(buffer_pool.at("rectangle frame"))));
+}
 
-void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std::string, GPUbuffer*>& gpu_buffers, const std::map<std::string, unsigned int>& shader_pool){
+
+void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std::string, GPUbuffer*>& gpu_buffers, const std::map<std::string, unsigned int>& shader_pool, const std::map<std::string, Model>& model_pool){
 	//load conf file
 	std::ifstream fs("objectconfigs/obj.conf", std::ios::in);
 	//parse file
@@ -223,13 +231,14 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			float size = 0.0f;
 			float rotation_speed = 0.0f;
 			glm::vec3 rotation_orientation = glm::vec3();
+			std::string model_file("");
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size>>rotation_speed>>rotation_orientation.x>>rotation_orientation.y>>rotation_orientation.z;
 			unsigned int s = shader_pool.find("basic shader 2")->second;
-			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new StationaryPlanet(
-					gpu_buffers.find("rectangle frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
+					//gpu_buffers.find("rectangle frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
+					&model_pool.at("planet1"), s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
 				)
 			);
 		}else if(type=="rePlanet"){
@@ -247,10 +256,10 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 				>>revolution_orientation.x>>revolution_orientation.y>>revolution_orientation.z
 				>>material.x>>material.y>>material.z;
 			unsigned int s = shader_pool.find("basic shader 2")->second;
-			//unsigned int s = Shader::initShaders("shaders/Vshader.glsl", "shaders/Fshader.glsl");
 			planets->push_back(
 				new RevolvingPlanet(
-					gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
+					//gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
+					&model_pool.at("planet2"), s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
 				)
 			);
 		}else if(type=="marker"){
@@ -260,10 +269,10 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			//parse into above fields
 			ss>>pos.x>>pos.y>>pos.z>>size;
 			unsigned int s = shader_pool.find("marker")->second;
-			//unsigned int s = Shader::initShaders("shaders/Vmarker.glsl", "shaders/Fmarker.glsl");
 			planets->push_back(
 				new Object(
-					gpu_buffers.find("marker")->second, s, pos, size
+					//gpu_buffers.find("marker")->second, s, pos, size
+					&model_pool.at("planet1"), s, pos, size
 				)
 			);
 		}else{
@@ -271,6 +280,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 		}
 	}
 	fs.close();
+
 	Logger::toConsole(Logger::L_INFO, "Objects initialized");
 }
 

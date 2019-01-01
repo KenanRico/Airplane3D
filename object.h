@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "gpubuffer.h"
 #include "pipeline.h"
+#include "model.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -61,17 +62,16 @@ class Object{
 		};
 
 	protected:
-		struct RenderInfo ri;
+		//struct RenderInfo ri;
+		Model const * model;
 		unsigned int shader;
-		//struct Position position;
-		//struct Size size;
 		struct GeometricProperties geometry;
 		struct PhysicalProperties physics;
 		struct Transformation transformation;
 		bool exists;
 
 	public:
-		Object(GPUbuffer const *, unsigned int, const glm::vec3&, float);
+		Object(Model const *, unsigned int, const glm::vec3&, float);
 		virtual ~Object();
 	private:
 		Object() = delete;
@@ -86,6 +86,7 @@ class Object{
 		virtual void computeTransformations(const Camera&);
 		virtual void sendInfoToShader(unsigned int) const;
 		bool isAlive() const;
+		const Model& getModel() const;
 	protected:
 		void syncProperties();
 

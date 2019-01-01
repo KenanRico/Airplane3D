@@ -12,7 +12,6 @@
 
 
 
-GPUbuffer* Bullet::bullet_shape = nullptr;
 unsigned int Bullet::shd = -1;
 
 
@@ -29,11 +28,6 @@ Bullet::Bullet(
 
 Bullet::~Bullet(){
 	//nothin
-}
-
-void Bullet::define(GPUbuffer* gb, unsigned int s){
-	bullet_shape = gb;
-	shd = s;
 }
 
 void Bullet::updateProperties(){

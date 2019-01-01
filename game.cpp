@@ -29,6 +29,7 @@
 
 GraphicsSystem Game::graphics;
 std::map<std::string, GPUbuffer*> Game::gpu_buffers;
+std::map<std::string, Model> Game::model_pool;
 std::map<std::string, unsigned int> Game::shader_pool;
 std::vector<Object*> Game::entity_pool;
 std::vector<Object*> Game::controllables;
@@ -40,14 +41,15 @@ Skybox Game::skybox;
 
 void Game::init(){
 	GameInitProc::createGPUBuffers(&gpu_buffers);
+	GameInitProc::generateModels(&model_pool, gpu_buffers);
 	GameInitProc::createShaders(&shader_pool);
-	GameInitProc::loadObjects(&entity_pool, gpu_buffers, shader_pool);
-	Bullet::define(gpu_buffers.find("marker")->second, shader_pool.find("marker")->second);
+	GameInitProc::loadObjects(&entity_pool, gpu_buffers, shader_pool, model_pool);
+	//Bullet::define(gpu_buffers.find("marker")->second, shader_pool.find("marker")->second);
 	GameInitProc::createLightings(&lightings, std::vector<Object*>{entity_pool[19], entity_pool[15], entity_pool[11]});
 	GameInitProc::createShadows(&shadows, lightings);
 	//create controllable object
 	vehicle = new Vehicle(
-		gpu_buffers.find("rectangle frame")->second,
+		&model_pool.at("planet1"),
 		shader_pool.find("basic shader 2")->second,
 		glm::vec3(-4.0, 2.0f, 3.0f), 4.0f, glm::vec3(1.0, 0.0, 0.0),
 		0.0f, 0.1f, 0.0f, 50.0f, 0.01f, 0.01f

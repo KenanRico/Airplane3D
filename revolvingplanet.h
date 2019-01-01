@@ -3,11 +3,11 @@
 //----------------------------------------------------------------
 #include "object.h"
 #include "camera.h"
-#include "gpubuffer.h"
 
 #include <glm/glm.hpp>
 
 
+class Model;
 class RevolvingPlanet : public Object{
 	private: 
 		struct Revolution{
@@ -27,7 +27,7 @@ class RevolvingPlanet : public Object{
 		*/
 
 	public:
-		RevolvingPlanet(GPUbuffer const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&, const glm::vec3&);
+		RevolvingPlanet(Model const *, unsigned int, const glm::vec3&, float, float, const glm::vec3&, const glm::vec3&);
 		virtual ~RevolvingPlanet();
 	private:
 		RevolvingPlanet() = delete;

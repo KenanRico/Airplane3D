@@ -12,13 +12,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-
+class Model;
 Vehicle::Vehicle(
-	GPUbuffer const * gb, unsigned int s, const glm::vec3& p, float si,
+	Model const * model, unsigned int s, const glm::vec3& p, float si,
 	const glm::vec3& _front, float mag, float max, float min,
 	float mra, float ps, float rs
 ): 
-Object(gb, s, p, si),
+Object(model, s, p, si),
 orientation(
 	(struct Orientation){
 		glm::normalize(_front),
@@ -141,7 +141,7 @@ void Vehicle::control(std::vector<Object*>* objects){
 		cameras.current = &cameras.views[(cameras.current-cameras.views+1) % 3];
 	}
 	if(EventHandler::keyClicked(EventHandler::J)){
-		objects->push_back(new Bullet(geometry.position.current, 1.0f, orientation.front, velocity.magnitude+0.1f, 100.0f, this));
+		//objects->push_back(new Bullet(geometry.position.current, 1.0f, orientation.front, velocity.magnitude+0.1f, 100.0f, this));
 	}
 }
 

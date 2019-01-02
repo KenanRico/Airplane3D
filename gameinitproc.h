@@ -16,7 +16,8 @@
 
 namespace GameInitProc{
 	void createGPUBuffers(std::map<std::string, GPUbuffer*>*);
-	void generateModels(std::map<std::string, Model>*, const std::map<std::string, GPUbuffer*>&);
+	void genSimpleModels(std::map<std::string, Model>*, const std::map<std::string, GPUbuffer*>&);
+	void genComplexModels(std::map<std::string, Model>*);
 	void createShaders(std::map<std::string, unsigned int>*);
 	void loadObjects(
 		std::vector<Object*>*,

@@ -4,7 +4,6 @@
 #include <glad/glad.h>
 
 #include "camera.h"
-#include "gpubuffer.h"
 #include "pipeline.h"
 #include "model.h"
 
@@ -18,13 +17,6 @@ class Shadow;
 
 class Object{
 	protected:
-		struct RenderInfo{
-			unsigned int VAO;
-			unsigned int EBO;
-			unsigned int indices_count;
-			unsigned int instance_array_ID;
-			GLenum mode;
-		};
 		struct Position{
 			glm::vec3 last;
 			glm::vec3 current;
@@ -62,7 +54,6 @@ class Object{
 		};
 
 	protected:
-		//struct RenderInfo ri;
 		Model const * model;
 		unsigned int shader;
 		struct GeometricProperties geometry;

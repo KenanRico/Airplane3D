@@ -207,12 +207,15 @@ void GameInitProc::createShaders(std::map<std::string, unsigned int>* shader_poo
 	Logger::toConsole(Logger::L_INFO, "Shaders initialized");
 }
 
-void GameInitProc::generateModels(std::map<std::string, Model>* model_pool, const std::map<std::string, GPUbuffer*>& buffer_pool){
-	//model_pool->insert(std::make_pair("planet1", Model("models/planet1.obj")));
-	//model_pool->insert(std::make_pair("planet2", Model("models/planet2.obj")));
-	//model_pool->insert(std::make_pair("ship", Model("models/ship.obj")));
-	model_pool->insert(std::make_pair("planet1", Model(buffer_pool.at("rectangle frame"))));
-	model_pool->insert(std::make_pair("planet2", Model(buffer_pool.at("rectangle frame"))));
+void GameInitProc::genSimpleModels(std::map<std::string, Model>* model_pool, const std::map<std::string, GPUbuffer*>& buffer_pool){
+	//model_pool->insert(std::make_pair("planet1", Model(buffer_pool.at("rectangle frame"))));
+	model_pool->insert(std::make_pair("planet4", Model(buffer_pool.at("rectangle frame"))));
+}
+
+void GameInitProc::genComplexModels(std::map<std::string, Model>* model_pool){
+	model_pool->insert(std::make_pair("planet2", Model("models/bob/nanosuit.obj")));
+	model_pool->insert(std::make_pair("planet3", Model("models/astroid_1/A2.obj")));
+	model_pool->insert(std::make_pair("planet1", Model("models/astroid_2/astroid.obj")));
 }
 
 
@@ -237,7 +240,6 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			unsigned int s = shader_pool.find("basic shader 2")->second;
 			planets->push_back(
 				new StationaryPlanet(
-					//gpu_buffers.find("rectangle frame")->second, s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
 					&model_pool.at("planet1"), s, pos, size, rotation_speed, glm::normalize(rotation_orientation)
 				)
 			);
@@ -258,8 +260,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			unsigned int s = shader_pool.find("basic shader 2")->second;
 			planets->push_back(
 				new RevolvingPlanet(
-					//gpu_buffers.find("rectangle frame")->second, s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
-					&model_pool.at("planet2"), s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
+					&model_pool.at("planet3"), s, pos, size, revolution_speed, glm::normalize(revolution_orientation), material
 				)
 			);
 		}else if(type=="marker"){
@@ -271,8 +272,7 @@ void GameInitProc::loadObjects(std::vector<Object*>* planets, const std::map<std
 			unsigned int s = shader_pool.find("marker")->second;
 			planets->push_back(
 				new Object(
-					//gpu_buffers.find("marker")->second, s, pos, size
-					&model_pool.at("planet1"), s, pos, size
+					&model_pool.at("planet4"), s, pos, size
 				)
 			);
 		}else{

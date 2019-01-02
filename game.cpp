@@ -41,7 +41,8 @@ Skybox Game::skybox;
 
 void Game::init(){
 	GameInitProc::createGPUBuffers(&gpu_buffers);
-	GameInitProc::generateModels(&model_pool, gpu_buffers);
+	GameInitProc::genSimpleModels(&model_pool, gpu_buffers);
+	GameInitProc::genComplexModels(&model_pool);
 	GameInitProc::createShaders(&shader_pool);
 	GameInitProc::loadObjects(&entity_pool, gpu_buffers, shader_pool, model_pool);
 	//Bullet::define(gpu_buffers.find("marker")->second, shader_pool.find("marker")->second);

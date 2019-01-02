@@ -17,7 +17,6 @@ class Mesh{
 	private:
 		struct RenderInfo ri;
 		std::vector<unsigned int> textures;
-		bool simple;
 
 	public:
 		Mesh(unsigned int, unsigned int, unsigned int, GLenum, const std::vector<unsigned int>&);

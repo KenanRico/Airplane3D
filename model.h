@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <assimp/scene.h>
 
@@ -14,7 +15,10 @@
 class Model{
 	private:
 		std::vector<Mesh> meshes;
-		std::vector<unsigned int> model_texture_pool;
+		std::map<std::string, unsigned int> model_texture_pool;
+		std::string model_dir;
+		std::vector<unsigned int> VAOs;
+		std::vector<unsigned int> EBOs;
 
 	public:
 		Model(const std::string&); //load from model file
@@ -27,6 +31,9 @@ class Model{
 
 	private:
 		void loadModel(aiScene const *);
+		void addNodeMeshes(aiScene const *, aiNode const *);
+		unsigned int GenVAO(const std::vector<float>&, const std::vector<float>&, const std::vector<float>&);
+		unsigned int GenEBO(const std::vector<unsigned int>&);
 	public:
 		const std::vector<Mesh>& getMeshes() const;
 
